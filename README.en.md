@@ -1,36 +1,22 @@
-# leju_kuavo_tongverse-challenge-cup-2025
+Leju_Kuavo_Tongverse-Challenge-Cup-2025
 
-#### Description
-{**When you're done, you can delete the content in this README and update the file with details for others getting started with your repository**}
+Introduction  
+Leju-Tongverse Simulation Platform  
+A "AI + Robotics" virtual training arena that provides a safe and controllable simulation environment for embodied intelligence, enabling robots to fully prepare and train before facing real-world challenges.
 
-#### Software Architecture
-Software architecture description
+Release Timeline  
+1. By May 28th: Release of the robot simulation environment, allowing participants to debug robot control interfaces (e.g., basic mobility interfaces, arm planning interfaces).  
+2. May 8th: Release of the competition simulation environment, including uneven terrain, stairs, slopes, and other challenge scenarios.  
+3. June 5th: Release of a simplified example for simulating competition tasks.  
 
-#### Installation
+Robot Simulation Environment Usage  
+For instructions on using the robot simulation environment, refer to the following documents:  
+1. [Robot Simulation Environment](docs/robot_simulation_environment_usage.md)  
+2. [Interface Documentation](https://kuavo.lejurobot.com/beta_manual/basic_usage/kuavo-ros-control/docs/4%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3/%E6%8E%A5%E5%8F%A3%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/)  
+3. [Q&A](https://kuavo.lejurobot.com/beta_manual/basic_usage/kuavo-ros-control/docs/7%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/)  
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+Competition Simulation Environment  
+*To be updated...*  
 
-#### Instructions
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
-
-
-#### Gitee Feature
-
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+Example Usage Guide  
+*To be updated...*  
