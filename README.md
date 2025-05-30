@@ -27,8 +27,7 @@ Ensure the following dependencies are installed before running the platform:
 2. Launch the TongVerse-Lite environment:
 
    ```shell
-   # Navigate to the biped_challenge/ folder
-   # cd biped_challenge
+   # Navigate to the leju_kuavo_tongverse-challenge-cup-2025/ folder
    bash script/run_docker.sh
    ```
 
