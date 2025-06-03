@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/motion_capture_ik/share/roseus/ros/motion_capture_ik/msg/handPose.l

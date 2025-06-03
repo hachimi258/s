@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_msgs
+
+Name: ocs2_msgs
+Description: Description of ocs2_msgs
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_msgs/include
+Libs: -L${prefix}/lib 
+Requires: std_msgs message_runtime

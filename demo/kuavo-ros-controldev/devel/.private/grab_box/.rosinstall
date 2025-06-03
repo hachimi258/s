@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/grab_box/setup.sh

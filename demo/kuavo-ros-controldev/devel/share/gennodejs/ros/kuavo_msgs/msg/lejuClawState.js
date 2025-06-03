@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_msgs/share/gennodejs/ros/kuavo_msgs/msg/lejuClawState.js

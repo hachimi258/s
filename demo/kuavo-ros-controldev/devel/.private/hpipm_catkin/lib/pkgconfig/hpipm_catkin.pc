@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/hpipm_catkin
+
+Name: hpipm_catkin
+Description: Description of hpipm_catkin
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/ocs2/ocs2_sqp/hpipm_catkin/include -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/hpipm_catkin/include
+Libs: -L${prefix}/lib -lhpipm_catkin -lhpipm
+Requires: blasfeo_catkin

@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_robotic_tools
+
+Name: ocs2_robotic_tools
+Description: Description of ocs2_robotic_tools
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/ocs2/ocs2_robotic_tools/include -I/usr/include/eigen3
+Libs: -L${prefix}/lib -locs2_robotic_tools
+Requires: ocs2_core ocs2_oc

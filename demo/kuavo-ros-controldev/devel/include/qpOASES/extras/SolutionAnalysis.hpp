@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/qpoases_catkin/include/qpOASES/extras/SolutionAnalysis.hpp

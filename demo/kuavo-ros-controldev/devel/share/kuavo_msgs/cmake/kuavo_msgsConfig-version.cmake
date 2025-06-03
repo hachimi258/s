@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_msgs/share/kuavo_msgs/cmake/kuavo_msgsConfig-version.cmake

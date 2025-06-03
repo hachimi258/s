@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/blasfeo_catkin
+
+Name: blasfeo_catkin
+Description: Description of blasfeo_catkin
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/blasfeo_catkin/include
+Libs: -L${prefix}/lib -lblasfeo
+Requires: 

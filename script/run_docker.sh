@@ -1,6 +1,6 @@
 #!/bin/sh  
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-PROJECT_DIR=$(realpath "$SCRIPT_DIR/../../")
+PROJECT_DIR=$(realpath "$SCRIPT_DIR/../")
 
 echo $PROJECT_DIR
 
@@ -16,4 +16,4 @@ docker run --name kuavo-tv -it --runtime=nvidia --gpus all -e "ACCEPT_EULA=Y" --
     -e GDK_SYNCHRONIZE=1 \
     -e ROBOT_VERSION=45 \
     -v $PROJECT_DIR:/TongVerse/biped_challenge:rw \
-    kuavo_tv_release:latest bash
+    kuavo_tv bash

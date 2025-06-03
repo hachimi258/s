@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/realsense_sim_metadata
+
+Name: realsense_sim_metadata
+Description: Description of realsense_sim_metadata
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

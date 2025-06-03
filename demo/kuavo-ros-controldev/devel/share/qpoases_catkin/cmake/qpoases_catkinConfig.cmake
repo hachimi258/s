@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/qpoases_catkin/share/qpoases_catkin/cmake/qpoases_catkinConfig.cmake

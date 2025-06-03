@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_sqp/share/ocs2_sqp/cmake/ocs2_sqpConfig-version.cmake

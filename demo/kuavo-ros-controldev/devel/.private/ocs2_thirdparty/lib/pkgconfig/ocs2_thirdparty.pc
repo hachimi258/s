@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_thirdparty
+
+Name: ocs2_thirdparty
+Description: Description of ocs2_thirdparty
+Version: 0.0.1
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/ocs2/ocs2_thirdparty/include
+Libs: -L${prefix}/lib 
+Requires: 

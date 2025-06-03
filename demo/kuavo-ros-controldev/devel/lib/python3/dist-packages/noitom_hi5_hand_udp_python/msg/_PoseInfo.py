@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/noitom_hi5_hand_udp_python/lib/python3/dist-packages/noitom_hi5_hand_udp_python/msg/_PoseInfo.py

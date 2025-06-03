@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_ros_interfaces
+
+Name: kuavo_ros_interfaces
+Description: Description of kuavo_ros_interfaces
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_ros_interfaces/include
+Libs: -L${prefix}/lib 
+Requires: roscpp rospy std_msgs message_runtime
