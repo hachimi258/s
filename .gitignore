@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+__pycache__/
+
+.ccache
+ecmaster*.log
+ecmaster*.csv
+
+**/*.pyc
+.cppad/
