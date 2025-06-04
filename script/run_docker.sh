@@ -18,4 +18,4 @@ docker run --name kuavo-tv -it --runtime=nvidia --gpus all -e "ACCEPT_EULA=Y" --
     -e GDK_SYNCHRONIZE=1 \
     -e ROBOT_VERSION=45 \
     -v $PROJECT_DIR:/TongVerse/biped_challenge:rw \
-    kuavo_tv bash
+    kuavo_tv_release:latest bash

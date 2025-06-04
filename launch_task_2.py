@@ -21,7 +21,7 @@ def main():
     print("start launch")
 
     # Initialize the environment with task ID and seed.
-    env = Env(TASK_SEED, task_id="TaskTwo")
+    env = Env(seed=TASK_SEED)
     # Always call env.reset() to initialize the environment.
     env.reset()
     env._kuavo.set_world_pose(

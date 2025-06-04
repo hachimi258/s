@@ -20,7 +20,7 @@ def main():
     print("start launch")
 
     # Initialize the environment with task ID and seed.
-    env = Env(TASK_SEED)
+    env = Env(seed=TASK_SEED)
     # Always call env.reset() to initialize the environment.
     env.reset()
 

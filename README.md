@@ -14,14 +14,14 @@ Ensure the following dependencies are installed before running the platform:
 
 - [Docker](https://docs.docker.com/engine/install/)
 - [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- [Docker Image Download](https://kuavo.lejurobot.com/docker_images/leju_kuavo_tongverse-challenge-cup-2025/kuavo_tv-docker-release-v1.tar.gz)
+- [Docker Image Download](https://kuavo.lejurobot.com/docker_images/leju_kuavo_tongverse-challenge-cup-2025/kuavo_tv-docker-release-v2.tar.gz)
 
 ### Setting Up Docker
 
 1. Load the Docker image:
 
    ```shell
-   docker load -i kuavo_tv-docker-release-v1.0.tar.gz
+   docker load -i kuavo_tv-docker-release-v2.tar.gz
    ```
 
 2. Launch the TongVerse-Lite environment:
