@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/humanoid_common
+
+Name: humanoid_common
+Description: Description of humanoid_common
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/humanoid-control/humanoid_common/include
+Libs: -L${prefix}/lib 
+Requires: roscpp kuavo_common qpoases_catkin ocs2_core ocs2_oc ocs2_ddp ocs2_mpc ocs2_sqp ocs2_ipm ocs2_robotic_tools ocs2_pinocchio_interface ocs2_centroidal_model ocs2_msgs ocs2_ros_interfaces

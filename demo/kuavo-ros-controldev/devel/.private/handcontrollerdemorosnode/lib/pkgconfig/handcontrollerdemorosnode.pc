@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/handcontrollerdemorosnode
+
+Name: handcontrollerdemorosnode
+Description: Description of handcontrollerdemorosnode
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/handcontrollerdemorosnode/include
+Libs: -L${prefix}/lib 
+Requires: 

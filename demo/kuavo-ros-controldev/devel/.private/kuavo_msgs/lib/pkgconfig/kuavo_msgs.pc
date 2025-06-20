@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_msgs
+
+Name: kuavo_msgs
+Description: Description of kuavo_msgs
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_msgs/include
+Libs: -L${prefix}/lib 
+Requires: message_generation message_runtime

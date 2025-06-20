@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_ros_interfaces/share/roseus/ros/kuavo_ros_interfaces/srv/planArmTrajectoryBezierCurve.l

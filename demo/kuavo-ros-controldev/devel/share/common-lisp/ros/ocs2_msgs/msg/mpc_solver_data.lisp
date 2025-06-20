@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_msgs/share/common-lisp/ros/ocs2_msgs/msg/mpc_solver_data.lisp

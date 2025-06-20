@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_msgs/lib/python3/dist-packages/ocs2_msgs/msg/__init__.py

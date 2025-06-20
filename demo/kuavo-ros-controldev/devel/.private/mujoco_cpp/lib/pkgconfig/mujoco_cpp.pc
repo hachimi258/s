@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/mujoco_cpp
+
+Name: mujoco_cpp
+Description: Description of mujoco_cpp
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/mujoco/include
+Libs: -L${prefix}/lib -lmujoco_cpp
+Requires: roscpp realtime_tools lcm_msg

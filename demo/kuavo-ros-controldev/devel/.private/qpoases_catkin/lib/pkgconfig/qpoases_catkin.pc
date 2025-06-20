@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/qpoases_catkin
+
+Name: qpoases_catkin
+Description: Description of qpoases_catkin
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/qpoases_catkin/include
+Libs: -L${prefix}/lib -lqpOASES
+Requires: 

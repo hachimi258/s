@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/hpipm_catkin/share/hpipm_catkin/cmake/hpipm_catkinConfig-version.cmake

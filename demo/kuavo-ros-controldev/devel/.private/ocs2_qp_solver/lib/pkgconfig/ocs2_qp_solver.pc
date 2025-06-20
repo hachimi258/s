@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_qp_solver
+
+Name: ocs2_qp_solver
+Description: Description of ocs2_qp_solver
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/ocs2/ocs2_test_tools/ocs2_qp_solver/include -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/ocs2/ocs2_test_tools/ocs2_qp_solver/test/include -I/usr/include/eigen3
+Libs: -L${prefix}/lib -locs2_qp_solver
+Requires: ocs2_core ocs2_oc

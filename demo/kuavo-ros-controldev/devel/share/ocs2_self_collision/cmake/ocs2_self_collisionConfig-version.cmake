@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_self_collision/share/ocs2_self_collision/cmake/ocs2_self_collisionConfig-version.cmake

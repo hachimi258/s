@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/ocs2_ipm/share/ocs2_ipm/cmake/ocs2_ipmConfig-version.cmake

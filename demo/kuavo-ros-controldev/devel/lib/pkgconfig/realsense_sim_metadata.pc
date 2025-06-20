@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/realsense_sim_metadata/lib/pkgconfig/realsense_sim_metadata.pc

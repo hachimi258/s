@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/humanoid_controllers
+
+Name: humanoid_controllers
+Description: Description of humanoid_controllers
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/humanoid-control/humanoid_controllers/include
+Libs: -L${prefix}/lib -lhumanoid_controllers -lhumanoid_interface_shm
+Requires: roscpp controller_interface humanoid_common humanoid_interface humanoid_interface_ros humanoid_wbc humanoid_estimation kuavo_estimation ocs2_self_collision_visualization angles kuavo_common

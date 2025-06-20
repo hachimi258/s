@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_ros_interfaces/share/gennodejs/ros/kuavo_ros_interfaces/msg/jointBezierTrajectory.js
