@@ -1,5 +1,5 @@
 import rospy
-from kuavo_sdk.msg import robotHandPosition
+from kuavo_msgs.msg import robotHandPosition
 
 
 def publish_controlEndHand(hand_traj):
@@ -21,6 +21,11 @@ def publish_controlEndHand(hand_traj):
         # 设置左手和右手的位置
         msg.left_hand_position = hand_traj[0:6]
         msg.right_hand_position = hand_traj[6:]
+
+        rate = rospy.Rate(10)  # 10Hz
+        while pub.get_num_connections() == 0 and not rospy.is_shutdown():
+            rospy.loginfo("等待订阅者连接...")
+            rate.sleep()
 
         # 发布消息
         pub.publish(msg)

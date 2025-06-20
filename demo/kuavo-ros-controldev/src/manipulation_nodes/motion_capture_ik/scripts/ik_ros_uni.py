@@ -5,7 +5,7 @@ import signal
 import rospy
 import argparse
 import argparse
-from std_msgs.msg import Float32, Float32MultiArray
+from std_msgs.msg import Float32, Float32MultiArray, Int32
 from sensor_msgs.msg import JointState
 from handcontrollerdemorosnode.msg import armPoseWithTimeStamp, robotHandPosition
 from kuavo_msgs.srv import controlLejuClaw, controlLejuClawRequest
@@ -18,7 +18,7 @@ import threading
 import ctypes
 from tools.drake_trans import *
 
-from motion_capture_ik.srv import changeArmCtrlMode, changeArmCtrlModeKuavo
+from kuavo_msgs.srv import changeArmCtrlMode, changeArmCtrlModeKuavo
 
 import numpy as np
 from pydrake.all import (
@@ -51,7 +51,7 @@ import rospy
 from noitom_hi5_hand_udp_python.msg import handRotationEular
 from noitom_hi5_hand_udp_python.msg import PoseInfo, PoseInfoList, JoySticks
 from tools.quest3_utils import Quest3ArmInfoTransformer
-from motion_capture_ik.msg import ikSolveError, handPose, robotArmQVVD, armHandPose, twoArmHandPose, twoArmHandPoseCmd
+from kuavo_msgs.msg import ikSolveError, handPose, robotArmQVVD, armHandPose, twoArmHandPose, twoArmHandPoseCmd
 
 from tools.utils import get_package_path, ArmIdx, IkTypeIdx, rotation_matrix_diff_in_angle_axis, limit_value
 from tools.drake_trans import rpy_to_matrix
@@ -100,6 +100,7 @@ def set_thread_priority(thread, policy, priority):
 QIANGNAO = "qiangnao"
 JODELL = "jodell"
 LEJUCLAW = "lejuclaw"
+QIANGNAO_TOUCH = "qiangnao_touch"
 control_finger_type = 0
 control_torso = 0
 
@@ -132,6 +133,7 @@ class IkRos:
         self.__send_srv = send_srv
         self.__freeze_finger = False
         self.__button_y_last = False
+        self.trigger_reset_mode = False
 
         # self.hand_pub_timer = rospy.Timer(rospy.Duration(0.001), self.hand_finger_data_process)
 
@@ -148,6 +150,7 @@ class IkRos:
         self.kf_left = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise)
         initial_state[0:3] = self.arm_ik.right_hand_pose(self.arm_ik.q0())[0]
         self.kf_right = KalmanFilter3D(initial_state, initial_covariance, process_noise, measurement_noise)
+        self.external_q0 = None
         # TO-DO(matthew): subscribe to joint states
         # update joint states
         self.joint_sub = rospy.Subscriber(
@@ -190,29 +193,35 @@ class IkRos:
             "leju_claw_command", lejuClawCommand, queue_size=10
         )
         try:
-            if end_effector_type:
-                self.end_effector_type = end_effector_type
+            end_effector_mapping = {
+                QIANGNAO: QIANGNAO,
+                JODELL: JODELL,
+                LEJUCLAW: LEJUCLAW,
+                QIANGNAO_TOUCH:QIANGNAO_TOUCH
+            }
+            if end_effector_type in end_effector_mapping:
+                self.end_effector_type = end_effector_mapping[end_effector_type]
             else:
-                ros_end_effector_type_param = rospy.get_param("/end_effector_type")
-                # TODO should compatible more ee types
-                end_effector_mapping = {
-                    QIANGNAO: QIANGNAO,
-                    JODELL: JODELL,
-                    LEJUCLAW: LEJUCLAW
-                }
-                if ros_end_effector_type_param in end_effector_mapping:
-                    self.end_effector_type = end_effector_mapping[ros_end_effector_type_param]
-                else:
-                    self.end_effector_type = QIANGNAO
-        except KeyError:
+                self.end_effector_type = QIANGNAO
+        except Exception as e:
+            print(f"get end effector type error: {e}, use default qiangnao")
             self.end_effector_type = QIANGNAO
-        print(f"\033[93mEnd effector type: {self.end_effector_type}\033[0m")        
+        print(f"\033[93m--------------------------------------------------\033[0m")        
+        print(f"\033[93m- End effector type: {self.end_effector_type} \033[0m")
+        print(f"\033[93m--------------------------------------------------\033[0m")        
+
         signal.signal(signal.SIGINT, self.shutdown)
         signal.signal(signal.SIGTERM, self.shutdown)
         self.stop_event = threading.Event()
         self.ik_thread = threading.Thread(target=self.ik_controller_thread)
         self.ik_thread.start()
         set_thread_priority(self.ik_thread, int(SCHED_FIFO), 50)
+
+        # 保存初始关节角度
+        self.initial_q_first = None
+        
+        # 订阅手臂模式topic
+        self.arm_mode_sub = rospy.Subscriber('/quest3/triger_arm_mode', Int32, self.arm_mode_callback)
 
         self.run()
         self.ik_thread.join()
@@ -348,7 +357,7 @@ class IkRos:
         if self.__as_mc_ik:
             print("[ik]: Waiting for OK-guesture(hold on for 1-2 seconds) to start teleoperation...")
             while not self.quest3_arm_info_transformer.is_runing:
-                self.hand_finger_data_process(0)
+                #self.hand_finger_data_process(0)
                 if self.stop_event.is_set():
                     print("[ik]: Stop event is set, exit.")
                     return
@@ -363,7 +372,8 @@ class IkRos:
             print("\033[92m[ik]: Recied start signal response, Start teleoperation.\033[0m")
         if self.__as_mc_ik:
             print("[ik]: If you want to stop teleoperation, please make a Shot-guesture(hold on for 1-2 seconds).")
-        q_last = self.arm_ik.q0()
+        q_last = self.arm_ik.q0() if self.external_q0 is None else self.external_q0
+        pre_q_first = q_last.copy()
         # q_last[-14:] = self.__joint_states  # two arm joint states
         # q_last[7:14] = [0.1084,  0.0478 , 0.1954 ,-0.0801 , 0.1966 ,-0.5861 , 0.0755]
         q_now = q_last
@@ -373,18 +383,31 @@ class IkRos:
         sum_time_cost = 0.0
         arm_q_filtered = [0.0] * 14
         while not rospy.is_shutdown():
-            self.hand_finger_data_process(0)
+            #self.hand_finger_data_process(0)
             # print(f"q_now: {q_now}")
             is_runing = self.quest3_arm_info_transformer.is_runing if self.__as_mc_ik else True
             self.__current_pose, self.__current_pose_right = self.get_two_arm_pose(q_last)
             self.pub_solved_arm_eef_pose(q_last, self.__current_pose, self.__current_pose_right)
+            if self.trigger_reset_mode:
+                self.__target_pose = (None, None)
+                self.__current_pose = (None, None)
+                self.__target_pose_right = (None, None)
+                self.__current_pose_right = (None, None)
+                q_last = pre_q_first.copy()
+                self.trigger_reset_mode = False
+
             if(self.__as_mc_ik and self.quest3_arm_info_transformer.check_if_vr_error()):
                 rate.sleep()
                 print("\033[91mDetected VR ERROR!!! Please restart VR app in quest3 or check the battery level of the joystick!!!\.\033[0m")
                 continue
-            elif(self.__as_mc_ik and self.judge_target_is_far(0.35) or not is_runing):
+            elif(self.__as_mc_ik and (not is_runing)):
                 rate.sleep()
                 sys.stdout.write("\rStatus: {}, is target far?: {}".format("RUNING" if is_runing else "STOPED", self.judge_target_is_far()))
+                continue
+            
+            if self.__target_pose[0] is None or self.__target_pose_right[0] is None or \
+                self.__current_pose[0] is None or self.__current_pose_right[0] is None:
+                rate.sleep()
                 continue
             if self.arm_ik.type().name() == IkTypeIdx.TorsoIK.name():
                 l_hand_pose, l_hand_RPY = None, None
@@ -440,14 +463,14 @@ class IkRos:
                     q_last[-14:] = arm_q_filtered
                 else:
                     fail_count += 1
-                    print(f"""\nq_last:{q_last}\n l_hand_pose:{l_hand_pose}\n 
-                          r_hand_pose:{r_hand_pose}\n 
-                          l_hand_RPY:{l_hand_RPY}\n 
-                          r_hand_RPY:{r_hand_RPY}\n 
-                          l_elbow_pos:{l_elbow_pos}\n 
-                          r_elbow_pos:{r_elbow_pos}\n 
-                          left_shoulder_rpy_in_robot:{left_shoulder_rpy_in_robot}\n 
-                          right_shoulder_rpy_in_robot:{right_shoulder_rpy_in_robot}\n""")
+                    # print(f"""\nq_last:{q_last}\n l_hand_pose:{l_hand_pose}\n 
+                    #       r_hand_pose:{r_hand_pose}\n 
+                    #       l_hand_RPY:{l_hand_RPY}\n 
+                    #       r_hand_RPY:{r_hand_RPY}\n 
+                    #       l_elbow_pos:{l_elbow_pos}\n 
+                    #       r_elbow_pos:{r_elbow_pos}\n 
+                    #       left_shoulder_rpy_in_robot:{left_shoulder_rpy_in_robot}\n 
+                    #       right_shoulder_rpy_in_robot:{right_shoulder_rpy_in_robot}\n""")
 
                 run_count += 1
                 success_rate = 100 * (1.0 - fail_count / float(run_count))
@@ -517,6 +540,8 @@ class IkRos:
 
     def two_arm_hand_pose_target_callback(self, msg_ori):
         msg = msg_ori.hand_poses
+        if msg_ori.use_custom_ik_param:
+            self.external_q0 = list(msg.left_pose.joint_angles) + list(msg.right_pose.joint_angles)
         self.__target_pose = (msg.left_pose.pos_xyz, msg.left_pose.quat_xyzw)
         self.__target_pose_right = (msg.right_pose.pos_xyz, msg.right_pose.quat_xyzw)
         if(abs(msg.left_pose.elbow_pos_xyz[0]) <= 1e-5 
@@ -651,9 +676,9 @@ class IkRos:
         """
         If target is far, return True, else return False.
         """
-        if self.__target_pose is None or self.__target_pose_right is None:
+        if self.__target_pose[0] is None or self.__target_pose_right[0] is None:
             return False
-        if self.__current_pose is None or self.__current_pose_right is None:
+        if self.__current_pose[0] is None or self.__current_pose_right[0] is None:
             return False
         pos_left, _ = self.__current_pose
         pos_right, _ = self.__current_pose_right
@@ -696,7 +721,7 @@ class IkRos:
         right_hand_position = [0 for i in range(6)]
         robot_hand_position = robotHandPosition()
         robot_hand_position.header.stamp = rospy.Time.now()
-        if self.end_effector_type == QIANGNAO:
+        if self.end_effector_type == QIANGNAO or self.end_effector_type == QIANGNAO_TOUCH:
             if joyStick_data is not None:
                 if joyStick_data.left_second_button_pressed and self.__button_y_last is False:
                     print(f"\033[91mButton Y is pressed.\033[0m")
@@ -766,6 +791,16 @@ class IkRos:
             else:
                 return
 
+    # 添加手臂模式回调函数
+    def arm_mode_callback(self, msg):
+        new_mode = msg.data
+        if new_mode != 2:  # 当模式不是2时
+            # 重置所有姿态
+            print(f"\033[91m[IK]Reset arm mode.\033[0m")
+            self.trigger_reset_mode = True
+            
+
+
 if __name__ == "__main__":
     rospy.init_node("diff_ik_node", anonymous=True)
 
@@ -787,11 +822,22 @@ if __name__ == "__main__":
     parser.add_argument("--control_finger_type", type=int, default=0, help="0: control all fingers by upper-gripper. 1: control thumb and index fingers by upper-gripper, control other fingers by lower-gripper.")
     parser.add_argument("--control_torso", type=int, default=0, help="0: do NOT control, 1: control torso.")
     parser.add_argument("--predict_gesture", type=str2bool, default=False, help="Use Neural Network to predict hand gesture, True or False.")
-
+    parser.add_argument("--eef_z_bias", type=float, default=-0.0, help="End effector z-axis bias distance.")
     args, unknown = parser.parse_known_args()
-    end_effector_type = args.end_effector_type
+    # ee_type
+    end_effector_type=""
+    try:
+        if rospy.has_param("/end_effector_type"):
+            end_effector_type = rospy.get_param("/end_effector_type")
+            print(f"\033[92mend_effector_type from rosparm: {end_effector_type}\033[0m")
+        else:
+            print(f"\033[92mend_effector_type from args: {end_effector_type}\033[0m")
+            end_effector_type = args.end_effector_type
+    except Exception as e:
+        print(e)
     ctrl_arm_idx = ArmIdx(args.ctrl_arm_idx)
     ik_type_idx = IkTypeIdx(args.ik_type_idx)
+    eef_z_bias = args.eef_z_bias
     print(type(args.send_srv))
     send_srv = args.send_srv
     control_finger_type = args.control_finger_type
@@ -820,9 +866,9 @@ if __name__ == "__main__":
     shoulder_frame_names = model_config["shoulder_frame_names"]
     upper_arm_length = model_config["upper_arm_length"]
     lower_arm_length = model_config["lower_arm_length"]
-    print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}")
-    rospy.set_param("/quest3/upper_arm_length", upper_arm_length)
-    rospy.set_param("/quest3/lower_arm_length", lower_arm_length)
+    # print(f"upper_arm_length: {upper_arm_length}, lower_arm_length: {lower_arm_length}")
+    # rospy.set_param("/quest3/upper_arm_length", upper_arm_length)
+    # rospy.set_param("/quest3/lower_arm_length", lower_arm_length)
     
     print(f"Model file: {model_file}")
     print(f"Model config file: {model_config_file}")
@@ -864,5 +910,19 @@ if __name__ == "__main__":
         )
         arm_ik.init_state(0.0, 0.0)
     arm_length_left, arm_length_right = arm_ik.get_arm_length()
+    p_bS = arm_ik.get_two_frame_dis_vec(shoulder_frame_names[0], end_frames_name[0])
+    upper_arm_length = 100.0 * arm_ik.get_two_frame_dis(shoulder_frame_names[0], end_frames_name[3])
+    lower_arm_length = 100.0 * arm_ik.get_two_frame_dis(end_frames_name[3], end_frames_name[1])
+    shoulder_width_vec = 100.0 * arm_ik.get_two_frame_dis_vec(shoulder_frame_names[0], shoulder_frame_names[1])
+    shoulder_width = shoulder_width_vec[1]/2
+    print(f"shoulder_width_vec: {shoulder_width_vec} m")
+    print(f"p_bS: {p_bS} m")
+    print(f"upper_arm_length: {upper_arm_length:.3f} cm, lower_arm_length: {lower_arm_length:.3f} cm")
+    rospy.set_param("/quest3/base_shoulder_x_bias", float(p_bS[0]))
+    rospy.set_param("/quest3/base_shoulder_y_bias", float(p_bS[1]))
+    rospy.set_param("/quest3/base_shoulder_z_bias", float(p_bS[2]))
+    rospy.set_param("/quest3/upper_arm_length", float(upper_arm_length))
+    rospy.set_param("/quest3/lower_arm_length", float(lower_arm_length))
+    rospy.set_param("/quest3/shoulder_width", float(shoulder_width))
     print(f"\033[92mLeft Arm Length: {arm_length_left:.3f} m, Right Arm Length:{arm_length_right:.3f} m.\033[0m")
     ik_ros = IkRos(arm_ik, ctrl_arm_idx=ctrl_arm_idx, q_limit=q_limit, end_effector_type=end_effector_type, send_srv=send_srv, predict_gesture=predict_gesture)

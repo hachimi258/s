@@ -63,7 +63,7 @@ class footPoseTargetTrajectoriesSrvRequest {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '17f130f2bf33453ad92f340f67992d0e';
+    return '074a67ab229c3a1e68e2d35d1ecee61f';
   }
 
   static messageDefinition() {
@@ -76,10 +76,17 @@ class footPoseTargetTrajectoriesSrvRequest {
     float64[]    timeTrajectory
     int32[]      footIndexTrajectory
     footPose[]   footPoseTrajectory
+    footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+    
     ================================================================================
     MSG: kuavo_msgs/footPose
     float64[4] footPose # x, y, z, yaw
     float64[4] torsoPose # x, y, z, yaw
+    
+    ================================================================================
+    MSG: kuavo_msgs/footPoses
+    footPose[] data
+    
     `;
   }
 
@@ -174,6 +181,6 @@ class footPoseTargetTrajectoriesSrvResponse {
 module.exports = {
   Request: footPoseTargetTrajectoriesSrvRequest,
   Response: footPoseTargetTrajectoriesSrvResponse,
-  md5sum() { return 'bc0c14793d24668f68a3b8473f6545ec'; },
+  md5sum() { return '86a3a0586a4bc1d73a3be321ecdc3a15'; },
   datatype() { return 'kuavo_msgs/footPoseTargetTrajectoriesSrv'; }
 };

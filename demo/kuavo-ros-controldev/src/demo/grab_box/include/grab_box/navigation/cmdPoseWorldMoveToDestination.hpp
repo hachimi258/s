@@ -58,30 +58,10 @@ namespace GrabBox
         return BT::NodeStatus::FAILURE;
       }
       getInput<Eigen::Vector4d>("target_pose", target_pose_);
-      std::cout << "Original target_pose (deg): " << target_pose_.transpose() << std::endl;
-      
-      // 先将目标角度转换为弧度
-      target_pose_(3) *= M_PI / 180.0;
-      
-      // 获取当前姿态并计算差值
-      Eigen::VectorXd torso_pose = ocs2_state_.segment<4>(6);
-      std::cout << "torso_pose:"<<torso_pose.transpose()<<std::endl;
-      double yaw_diff = target_pose_(3) - torso_pose(3);
-      std::cout << "yaw_diff:"<<yaw_diff<<std::endl;
-      
-      // 调整差值到[-π, π]范围内
-      while (yaw_diff > M_PI) {
-          target_pose_(3) -= 2 * M_PI;
-          yaw_diff = target_pose_(3) - torso_pose(3);
-      }
-      while (yaw_diff < -M_PI) {
-          target_pose_(3) += 2 * M_PI;
-          yaw_diff = target_pose_(3) - torso_pose(3);
-      }
-      
-      std::cout << "Adjusted target_pose (rad): " << target_pose_.transpose() 
-                << ", yaw_diff (rad): " << yaw_diff << std::endl;
+      std::cout << "target_pose: " << target_pose_.transpose() << std::endl;
+      target_pose_(3) *= M_PI / 180.0; // 转化为弧度制
 
+      Eigen::VectorXd torso_pose = ocs2_state_.segment<4>(6);
       if(checkTargetReached(target_pose_, torso_pose))
       {
         std::string gait_name = "stance";

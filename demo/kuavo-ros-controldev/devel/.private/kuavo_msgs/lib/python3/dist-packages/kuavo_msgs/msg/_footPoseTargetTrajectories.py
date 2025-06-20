@@ -9,18 +9,25 @@ import struct
 import kuavo_msgs.msg
 
 class footPoseTargetTrajectories(genpy.Message):
-  _md5sum = "6854923406c37831b40979cd2570e027"
+  _md5sum = "69f7e48d9a18b5c4756f9577aeefff25"
   _type = "kuavo_msgs/footPoseTargetTrajectories"
   _has_header = False  # flag to mark the presence of a Header object
   _full_text = """float64[]    timeTrajectory
 int32[]      footIndexTrajectory
 footPose[]   footPoseTrajectory
+footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+
 ================================================================================
 MSG: kuavo_msgs/footPose
 float64[4] footPose # x, y, z, yaw
-float64[4] torsoPose # x, y, z, yaw"""
-  __slots__ = ['timeTrajectory','footIndexTrajectory','footPoseTrajectory']
-  _slot_types = ['float64[]','int32[]','kuavo_msgs/footPose[]']
+float64[4] torsoPose # x, y, z, yaw
+
+================================================================================
+MSG: kuavo_msgs/footPoses
+footPose[] data
+"""
+  __slots__ = ['timeTrajectory','footIndexTrajectory','footPoseTrajectory','additionalFootPoseTrajectory']
+  _slot_types = ['float64[]','int32[]','kuavo_msgs/footPose[]','kuavo_msgs/footPoses[]']
 
   def __init__(self, *args, **kwds):
     """
@@ -30,7 +37,7 @@ float64[4] torsoPose # x, y, z, yaw"""
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       timeTrajectory,footIndexTrajectory,footPoseTrajectory
+       timeTrajectory,footIndexTrajectory,footPoseTrajectory,additionalFootPoseTrajectory
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -45,10 +52,13 @@ float64[4] torsoPose # x, y, z, yaw"""
         self.footIndexTrajectory = []
       if self.footPoseTrajectory is None:
         self.footPoseTrajectory = []
+      if self.additionalFootPoseTrajectory is None:
+        self.additionalFootPoseTrajectory = []
     else:
       self.timeTrajectory = []
       self.footIndexTrajectory = []
       self.footPoseTrajectory = []
+      self.additionalFootPoseTrajectory = []
 
   def _get_types(self):
     """
@@ -75,6 +85,14 @@ float64[4] torsoPose # x, y, z, yaw"""
       for val1 in self.footPoseTrajectory:
         buff.write(_get_struct_4d().pack(*val1.footPose))
         buff.write(_get_struct_4d().pack(*val1.torsoPose))
+      length = len(self.additionalFootPoseTrajectory)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.additionalFootPoseTrajectory:
+        length = len(val1.data)
+        buff.write(_struct_I.pack(length))
+        for val2 in val1.data:
+          buff.write(_get_struct_4d().pack(*val2.footPose))
+          buff.write(_get_struct_4d().pack(*val2.torsoPose))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -88,6 +106,8 @@ float64[4] torsoPose # x, y, z, yaw"""
     try:
       if self.footPoseTrajectory is None:
         self.footPoseTrajectory = None
+      if self.additionalFootPoseTrajectory is None:
+        self.additionalFootPoseTrajectory = None
       end = 0
       start = end
       end += 4
@@ -118,6 +138,26 @@ float64[4] torsoPose # x, y, z, yaw"""
         end += 32
         val1.torsoPose = _get_struct_4d().unpack(str[start:end])
         self.footPoseTrajectory.append(val1)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.additionalFootPoseTrajectory = []
+      for i in range(0, length):
+        val1 = kuavo_msgs.msg.footPoses()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        val1.data = []
+        for i in range(0, length):
+          val2 = kuavo_msgs.msg.footPose()
+          start = end
+          end += 32
+          val2.footPose = _get_struct_4d().unpack(str[start:end])
+          start = end
+          end += 32
+          val2.torsoPose = _get_struct_4d().unpack(str[start:end])
+          val1.data.append(val2)
+        self.additionalFootPoseTrajectory.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -143,6 +183,14 @@ float64[4] torsoPose # x, y, z, yaw"""
       for val1 in self.footPoseTrajectory:
         buff.write(val1.footPose.tostring())
         buff.write(val1.torsoPose.tostring())
+      length = len(self.additionalFootPoseTrajectory)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.additionalFootPoseTrajectory:
+        length = len(val1.data)
+        buff.write(_struct_I.pack(length))
+        for val2 in val1.data:
+          buff.write(val2.footPose.tostring())
+          buff.write(val2.torsoPose.tostring())
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -157,6 +205,8 @@ float64[4] torsoPose # x, y, z, yaw"""
     try:
       if self.footPoseTrajectory is None:
         self.footPoseTrajectory = None
+      if self.additionalFootPoseTrajectory is None:
+        self.additionalFootPoseTrajectory = None
       end = 0
       start = end
       end += 4
@@ -187,6 +237,26 @@ float64[4] torsoPose # x, y, z, yaw"""
         end += 32
         val1.torsoPose = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=4)
         self.footPoseTrajectory.append(val1)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.additionalFootPoseTrajectory = []
+      for i in range(0, length):
+        val1 = kuavo_msgs.msg.footPoses()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        val1.data = []
+        for i in range(0, length):
+          val2 = kuavo_msgs.msg.footPose()
+          start = end
+          end += 32
+          val2.footPose = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=4)
+          start = end
+          end += 32
+          val2.torsoPose = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=4)
+          val1.data.append(val2)
+        self.additionalFootPoseTrajectory.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill

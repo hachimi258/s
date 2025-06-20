@@ -21,7 +21,7 @@ class jointData {
       this.joint_q = null;
       this.joint_v = null;
       this.joint_vd = null;
-      this.joint_current = null;
+      this.joint_torque = null;
     }
     else {
       if (initObj.hasOwnProperty('joint_q')) {
@@ -42,11 +42,11 @@ class jointData {
       else {
         this.joint_vd = [];
       }
-      if (initObj.hasOwnProperty('joint_current')) {
-        this.joint_current = initObj.joint_current
+      if (initObj.hasOwnProperty('joint_torque')) {
+        this.joint_torque = initObj.joint_torque
       }
       else {
-        this.joint_current = [];
+        this.joint_torque = [];
       }
     }
   }
@@ -59,8 +59,8 @@ class jointData {
     bufferOffset = _arraySerializer.float64(obj.joint_v, buffer, bufferOffset, null);
     // Serialize message field [joint_vd]
     bufferOffset = _arraySerializer.float64(obj.joint_vd, buffer, bufferOffset, null);
-    // Serialize message field [joint_current]
-    bufferOffset = _arraySerializer.float64(obj.joint_current, buffer, bufferOffset, null);
+    // Serialize message field [joint_torque]
+    bufferOffset = _arraySerializer.float64(obj.joint_torque, buffer, bufferOffset, null);
     return bufferOffset;
   }
 
@@ -74,8 +74,8 @@ class jointData {
     data.joint_v = _arrayDeserializer.float64(buffer, bufferOffset, null)
     // Deserialize message field [joint_vd]
     data.joint_vd = _arrayDeserializer.float64(buffer, bufferOffset, null)
-    // Deserialize message field [joint_current]
-    data.joint_current = _arrayDeserializer.float64(buffer, bufferOffset, null)
+    // Deserialize message field [joint_torque]
+    data.joint_torque = _arrayDeserializer.float64(buffer, bufferOffset, null)
     return data;
   }
 
@@ -84,7 +84,7 @@ class jointData {
     length += 8 * object.joint_q.length;
     length += 8 * object.joint_v.length;
     length += 8 * object.joint_vd.length;
-    length += 8 * object.joint_current.length;
+    length += 8 * object.joint_torque.length;
     return length + 16;
   }
 
@@ -95,7 +95,7 @@ class jointData {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return 'ddaca6585c203ca18b9c3978db506bed';
+    return '2e01436cbc40e94e8fe8f54a2c4ea282';
   }
 
   static messageDefinition() {
@@ -104,7 +104,7 @@ class jointData {
     float64[] joint_q  
     float64[] joint_v  
     float64[] joint_vd    
-    float64[] joint_current  
+    float64[] joint_torque  
     
     `;
   }
@@ -136,11 +136,11 @@ class jointData {
       resolved.joint_vd = []
     }
 
-    if (msg.joint_current !== undefined) {
-      resolved.joint_current = msg.joint_current;
+    if (msg.joint_torque !== undefined) {
+      resolved.joint_torque = msg.joint_torque;
     }
     else {
-      resolved.joint_current = []
+      resolved.joint_torque = []
     }
 
     return resolved;

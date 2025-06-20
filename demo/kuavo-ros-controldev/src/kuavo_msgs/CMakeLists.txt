@@ -64,6 +64,7 @@ add_message_files(
   armTargetPoses.msg
   robotHeadMotionData.msg
   footPose.msg
+  footPoses.msg
   footPoseTargetTrajectories.msg
   gestureInfo.msg
   gestureTask.msg
@@ -71,7 +72,25 @@ add_message_files(
   Metadata.msg
   switchGaitByName.msg
   lejuClawCommand.msg
-  tagDataArray.msg
+  dexhandCommand.msg
+  touchSensorStatus.msg
+  dexhandTouchState.msg
+  yoloOutputData.msg
+  yoloDetection.msg
+  AprilTagDetection.msg
+  AprilTagDetectionArray.msg
+
+  # motion_capture_ik
+  robotArmQVVD.msg
+  ikSolveError.msg
+  handPose.msg
+  armHandPose.msg
+  twoArmHandPose.msg
+  headBodyPose.msg
+  ikSolveParam.msg
+  twoArmHandPoseCmd.msg
+  robotHandPosition.msg
+  headBodyPose.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -90,7 +109,19 @@ add_service_files(
   setTagId.srv
   footPoseTargetTrajectoriesSrv.srv
   getCurrentGaitName.srv
+  handForceLevel.srv
+  enableHandTouchSensor.srv
+  playmusic.srv
   SetTagPose.srv
+
+  # motion_capture_ik
+  changeArmCtrlMode.srv
+  twoArmHandPoseCmdSrv.srv
+  changeArmCtrlModeKuavo.srv
+  fkSrv.srv
+
+  SpeechSynthesis.srv
+  setMmCtrlFrame.srv
 )
 
 ## Generate actions in the 'action' folder

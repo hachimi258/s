@@ -111,7 +111,7 @@
   :super ros::object
   :slots ())
 
-(setf (get kuavo_msgs::singleStepControl :md5sum-) "9a5a8ad57a17963a16bf197fc7a66fa4")
+(setf (get kuavo_msgs::singleStepControl :md5sum-) "a8ea61e476f706843c20c1ad025c5cdc")
 (setf (get kuavo_msgs::singleStepControl :datatype-) "kuavo_msgs/singleStepControl")
 (setf (get kuavo_msgs::singleStepControl :request) kuavo_msgs::singleStepControlRequest)
 (setf (get kuavo_msgs::singleStepControl :response) kuavo_msgs::singleStepControlResponse)
@@ -119,7 +119,7 @@
 (defmethod kuavo_msgs::singleStepControlRequest
   (:response () (instance kuavo_msgs::singleStepControlResponse :init)))
 
-(setf (get kuavo_msgs::singleStepControlRequest :md5sum-) "9a5a8ad57a17963a16bf197fc7a66fa4")
+(setf (get kuavo_msgs::singleStepControlRequest :md5sum-) "a8ea61e476f706843c20c1ad025c5cdc")
 (setf (get kuavo_msgs::singleStepControlRequest :datatype-) "kuavo_msgs/singleStepControlRequest")
 (setf (get kuavo_msgs::singleStepControlRequest :definition-)
       "footPoseTargetTrajectories foot_pose_target_trajectories
@@ -129,16 +129,23 @@ MSG: kuavo_msgs/footPoseTargetTrajectories
 float64[]    timeTrajectory
 int32[]      footIndexTrajectory
 footPose[]   footPoseTrajectory
+footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+
 ================================================================================
 MSG: kuavo_msgs/footPose
 float64[4] footPose # x, y, z, yaw
+float64[4] torsoPose # x, y, z, yaw
+
+================================================================================
+MSG: kuavo_msgs/footPoses
+footPose[] data
 ---
 bool success
 string message
 
 ")
 
-(setf (get kuavo_msgs::singleStepControlResponse :md5sum-) "9a5a8ad57a17963a16bf197fc7a66fa4")
+(setf (get kuavo_msgs::singleStepControlResponse :md5sum-) "a8ea61e476f706843c20c1ad025c5cdc")
 (setf (get kuavo_msgs::singleStepControlResponse :datatype-) "kuavo_msgs/singleStepControlResponse")
 (setf (get kuavo_msgs::singleStepControlResponse :definition-)
       "footPoseTargetTrajectories foot_pose_target_trajectories
@@ -148,9 +155,16 @@ MSG: kuavo_msgs/footPoseTargetTrajectories
 float64[]    timeTrajectory
 int32[]      footIndexTrajectory
 footPose[]   footPoseTrajectory
+footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+
 ================================================================================
 MSG: kuavo_msgs/footPose
 float64[4] footPose # x, y, z, yaw
+float64[4] torsoPose # x, y, z, yaw
+
+================================================================================
+MSG: kuavo_msgs/footPoses
+footPose[] data
 ---
 bool success
 string message
@@ -159,6 +173,6 @@ string message
 
 
 
-(provide :kuavo_msgs/singleStepControl "9a5a8ad57a17963a16bf197fc7a66fa4")
+(provide :kuavo_msgs/singleStepControl "a8ea61e476f706843c20c1ad025c5cdc")
 
 

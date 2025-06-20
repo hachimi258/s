@@ -1,1 +1,0 @@
-/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/mobile_manipulator_controllers/share/mobile_manipulator_controllers/cmake/mobile_manipulator_controllersConfig-version.cmake

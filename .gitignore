@@ -8,3 +8,7 @@ ecmaster*.csv
 
 **/*.pyc
 .cppad/
+
+demo/kuavo-ros-controldev/.catkin_tools/
+demo/kuavo-ros-controldev/build/*
+demo/kuavo-ros-controldev/logs/*

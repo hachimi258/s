@@ -12,6 +12,7 @@ const _arrayDeserializer = _deserializer.Array;
 const _finder = _ros_msg_utils.Find;
 const _getByteLength = _ros_msg_utils.getByteLength;
 let footPose = require('./footPose.js');
+let footPoses = require('./footPoses.js');
 
 //-----------------------------------------------------------
 
@@ -22,6 +23,7 @@ class footPoseTargetTrajectories {
       this.timeTrajectory = null;
       this.footIndexTrajectory = null;
       this.footPoseTrajectory = null;
+      this.additionalFootPoseTrajectory = null;
     }
     else {
       if (initObj.hasOwnProperty('timeTrajectory')) {
@@ -42,6 +44,12 @@ class footPoseTargetTrajectories {
       else {
         this.footPoseTrajectory = [];
       }
+      if (initObj.hasOwnProperty('additionalFootPoseTrajectory')) {
+        this.additionalFootPoseTrajectory = initObj.additionalFootPoseTrajectory
+      }
+      else {
+        this.additionalFootPoseTrajectory = [];
+      }
     }
   }
 
@@ -56,6 +64,12 @@ class footPoseTargetTrajectories {
     bufferOffset = _serializer.uint32(obj.footPoseTrajectory.length, buffer, bufferOffset);
     obj.footPoseTrajectory.forEach((val) => {
       bufferOffset = footPose.serialize(val, buffer, bufferOffset);
+    });
+    // Serialize message field [additionalFootPoseTrajectory]
+    // Serialize the length for message field [additionalFootPoseTrajectory]
+    bufferOffset = _serializer.uint32(obj.additionalFootPoseTrajectory.length, buffer, bufferOffset);
+    obj.additionalFootPoseTrajectory.forEach((val) => {
+      bufferOffset = footPoses.serialize(val, buffer, bufferOffset);
     });
     return bufferOffset;
   }
@@ -75,6 +89,13 @@ class footPoseTargetTrajectories {
     for (let i = 0; i < len; ++i) {
       data.footPoseTrajectory[i] = footPose.deserialize(buffer, bufferOffset)
     }
+    // Deserialize message field [additionalFootPoseTrajectory]
+    // Deserialize array length for message field [additionalFootPoseTrajectory]
+    len = _deserializer.uint32(buffer, bufferOffset);
+    data.additionalFootPoseTrajectory = new Array(len);
+    for (let i = 0; i < len; ++i) {
+      data.additionalFootPoseTrajectory[i] = footPoses.deserialize(buffer, bufferOffset)
+    }
     return data;
   }
 
@@ -83,7 +104,10 @@ class footPoseTargetTrajectories {
     length += 8 * object.timeTrajectory.length;
     length += 4 * object.footIndexTrajectory.length;
     length += 64 * object.footPoseTrajectory.length;
-    return length + 12;
+    object.additionalFootPoseTrajectory.forEach((val) => {
+      length += footPoses.getMessageSize(val);
+    });
+    return length + 16;
   }
 
   static datatype() {
@@ -93,7 +117,7 @@ class footPoseTargetTrajectories {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '6854923406c37831b40979cd2570e027';
+    return '69f7e48d9a18b5c4756f9577aeefff25';
   }
 
   static messageDefinition() {
@@ -102,10 +126,17 @@ class footPoseTargetTrajectories {
     float64[]    timeTrajectory
     int32[]      footIndexTrajectory
     footPose[]   footPoseTrajectory
+    footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+    
     ================================================================================
     MSG: kuavo_msgs/footPose
     float64[4] footPose # x, y, z, yaw
     float64[4] torsoPose # x, y, z, yaw
+    
+    ================================================================================
+    MSG: kuavo_msgs/footPoses
+    footPose[] data
+    
     `;
   }
 
@@ -137,6 +168,16 @@ class footPoseTargetTrajectories {
     }
     else {
       resolved.footPoseTrajectory = []
+    }
+
+    if (msg.additionalFootPoseTrajectory !== undefined) {
+      resolved.additionalFootPoseTrajectory = new Array(msg.additionalFootPoseTrajectory.length);
+      for (let i = 0; i < resolved.additionalFootPoseTrajectory.length; ++i) {
+        resolved.additionalFootPoseTrajectory[i] = footPoses.Resolve(msg.additionalFootPoseTrajectory[i]);
+      }
+    }
+    else {
+      resolved.additionalFootPoseTrajectory = []
     }
 
     return resolved;
