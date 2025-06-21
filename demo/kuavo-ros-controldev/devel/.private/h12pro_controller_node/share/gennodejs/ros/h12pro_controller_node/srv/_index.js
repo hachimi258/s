@@ -1,22 +1,22 @@
 
 "use strict";
 
-let ExecuteArmAction = require('./ExecuteArmAction.js')
-let srvChangePhases = require('./srvChangePhases.js')
-let changeAMBACCtrlMode = require('./changeAMBACCtrlMode.js')
-let playmusic = require('./playmusic.js')
-let srvClearPositionCMD = require('./srvClearPositionCMD.js')
 let changeHandArmPosesByConfigName = require('./changeHandArmPosesByConfigName.js')
-let changeArmCtrlMode = require('./changeArmCtrlMode.js')
+let changeAMBACCtrlMode = require('./changeAMBACCtrlMode.js')
 let srvchangeCtlMode = require('./srvchangeCtlMode.js')
+let changeArmCtrlMode = require('./changeArmCtrlMode.js')
+let playmusic = require('./playmusic.js')
+let ExecuteArmAction = require('./ExecuteArmAction.js')
+let srvClearPositionCMD = require('./srvClearPositionCMD.js')
+let srvChangePhases = require('./srvChangePhases.js')
 
 module.exports = {
-  ExecuteArmAction: ExecuteArmAction,
-  srvChangePhases: srvChangePhases,
-  changeAMBACCtrlMode: changeAMBACCtrlMode,
-  playmusic: playmusic,
-  srvClearPositionCMD: srvClearPositionCMD,
   changeHandArmPosesByConfigName: changeHandArmPosesByConfigName,
-  changeArmCtrlMode: changeArmCtrlMode,
+  changeAMBACCtrlMode: changeAMBACCtrlMode,
   srvchangeCtlMode: srvchangeCtlMode,
+  changeArmCtrlMode: changeArmCtrlMode,
+  playmusic: playmusic,
+  ExecuteArmAction: ExecuteArmAction,
+  srvClearPositionCMD: srvClearPositionCMD,
+  srvChangePhases: srvChangePhases,
 };

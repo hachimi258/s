@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 '''
 Author: dongdongmingming
@@ -42,6 +42,8 @@ servo_usb_path = "/dev/usb_servo"
 claw_usb_path = "/dev/claw_serial"
 handL_usb_path = "/dev/stark_serial_L"
 handR_usb_path = "/dev/stark_serial_R"
+handTouchL_usb_path = "/dev/stark_serial_touch_L"
+handTouchR_usb_path = "/dev/stark_serial_touch_R"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -119,14 +121,24 @@ def usb_port():
 
     # hand L RS485 USB
     if os.path.exists(handL_usb_path):
-        print(bcolors.OKGREEN + "{} 左灵巧手串口设备存在".format(handL_usb_path) + bcolors.ENDC)
+        print(bcolors.OKGREEN + "{} 左灵巧手(普通)串口设备存在".format(handL_usb_path) + bcolors.ENDC)
     else:
-        print(bcolors.FAIL + "{} 左灵巧手串口设备不存在".format(handL_usb_path) + bcolors.ENDC)
+        print(bcolors.FAIL + "{} 左灵巧手(普通)串口设备不存在".format(handL_usb_path) + bcolors.ENDC)
     # hand R RS485 USB
     if os.path.exists(handR_usb_path):
-        print(bcolors.OKGREEN + "{} 右灵巧手串口设备存在".format(handR_usb_path) + bcolors.ENDC)
+        print(bcolors.OKGREEN + "{} 右灵巧手(普通)串口设备存在".format(handR_usb_path) + bcolors.ENDC)
     else:
-        print(bcolors.FAIL + "{} 右灵巧手串口设备不存在".format(handR_usb_path) + bcolors.ENDC)
+        print(bcolors.FAIL + "{} 右灵巧手(普通)串口设备不存在".format(handR_usb_path) + bcolors.ENDC)
+
+
+    if os.path.exists(handTouchL_usb_path):
+        print(bcolors.OKGREEN + "{} 左灵巧手（触觉）串口设备存在".format(handTouchL_usb_path) + bcolors.ENDC)
+    else:
+        print(bcolors.FAIL + "{} 左灵巧手（触觉）串口设备不存在".format(handTouchL_usb_path) + bcolors.ENDC)
+    if os.path.exists(handTouchR_usb_path):
+        print(bcolors.OKGREEN + "{} 右灵巧手（触觉）串口设备存在".format(handTouchR_usb_path) + bcolors.ENDC)
+    else:
+        print(bcolors.FAIL + "{} 右灵巧手（触觉）串口设备不存在".format(handTouchR_usb_path) + bcolors.ENDC)
 
 
     result,canBus = ruierman.canbus_open()
@@ -392,10 +404,75 @@ def hand_usb():
     else:
         print(bcolors.WARNING + "失败，kuavo电源板485设备连接异常" + bcolors.ENDC)
 
+
+def handTouch_usb():
+
+    device_list = []
+    
+    # 获取所有连接的串口设备
+    ports = list(serial.tools.list_ports.comports())
+    for port in ports:
+        if(port.description == "LJ485A - LJ485A"):
+            hwid_string = port.hwid
+            # 编写正则表达式
+            pattern = re.compile(r"SER=([0-9A-Z]+)")
+            # 使用findall方法查找所有匹配项，这将返回一个包含所有匹配结果的列表
+            matches = pattern.findall(hwid_string)
+            # 输出SER值
+            for match in matches:
+                print("串口：", port.device,"SER", match)  # 输出: DB81ASSB
+
+                device_list.append(port.device)
+
+        if(port.description == "LJ485B - LJ485B"):
+            hwid_string = port.hwid
+            # 编写正则表达式
+            pattern = re.compile(r"SER=([0-9A-Z]+)")
+            # 使用findall方法查找所有匹配项，这将返回一个包含所有匹配结果的列表
+            matches = pattern.findall(hwid_string)
+            # 输出SER值
+            for match in matches:
+                print("串口：", port.device,"SER", match)  # 输出: DB81ASSB
+
+                device_list.append(port.device)
+
+    swap_str = input("是否交换左右手(no/yes)：")
+    swap_flag = 0
+    if(swap_str[0].lower() == 'y'):
+        swap_flag = 1
+    if len(device_list) == 2:
+        # 定义脚本路径和参数
+        if(swap_flag):
+            arg1 = device_list[0]
+        else:
+            arg1 = device_list[1]
+        arg2 = "stark_serial_touch_R"
+        # 定义要运行的命令
+        command = "sudo bash "+ folder_path +"/generate_serial.sh "  +  arg1  + " " + arg2
+        print(command)
+        # 使用 subprocess.run() 运行命令
+        subprocess.run(command, shell=True)
+
+        
+        # 定义脚本路径和参数
+        if(swap_flag):
+            arg1 = device_list[1]
+        else:
+            arg1 = device_list[0]
+        arg2 = "stark_serial_touch_L"
+        # 定义要运行的命令
+        command = "sudo bash "+ folder_path +"/generate_serial.sh "  +  arg1  + " " + arg2
+        print(command)
+        # 使用 subprocess.run() 运行命令
+        subprocess.run(command, shell=True)
+    else:
+        print(bcolors.WARNING + "失败，kuavo电源板485设备连接异常" + bcolors.ENDC)
+
+
 def ruiwo_zero():
         
     kuavo_ros_file_path = folder_path +"/ruiwo_zero_set.sh" 
-    kuavo_open_file_path = folder_path +"../../installed/share/hardware_node/lib/ruiwo_controller/setZero.sh" 
+    kuavo_open_file_path = folder_path +"../../installed/share/hardware_plant/lib/ruiwo_controller/setZero.sh" 
     
 
     if os.path.exists(kuavo_ros_file_path):
@@ -426,6 +503,19 @@ def qiangnao_hand():
     subprocess.run(command, shell=True)
 
 
+def touch_dexhand():
+    # 定义要运行的命令
+    choice = input("请输入你要对触觉灵巧手的操作(Ctrl+C退出)  1. 配置usb 2. 测试 : ")
+    if choice == "1":
+        handTouch_usb()
+    elif choice == "2":
+        command = "bash "+ folder_path +"/touch_dexhand_test.sh --test" 
+        # 使用 subprocess.run() 运行命令
+        subprocess.run(command, shell=True)
+    else:
+        print("输入无效，请重新运行程序~")
+
+
 def update_kuavo():
     # 定义要运行的命令
     command = "bash "+ folder_path +"/update_kuavo.sh"  
@@ -433,8 +523,39 @@ def update_kuavo():
     # 使用 subprocess.run() 运行命令
     subprocess.run(command, shell=True)
 
-def license_sign():
+def arm_setzero():
 
+    kuavo_ros_file_path = folder_path +"/arm_setzero.sh" 
+    kuavo_open_file_path = folder_path +"../../installed/share/hardware_plant/lib/ruiwo_controller/arm_setzero.sh" 
+    
+    if os.path.exists(kuavo_ros_file_path):
+        command = "bash "+ kuavo_ros_file_path
+    elif os.path.exists(kuavo_open_file_path):
+        command = "bash "+ kuavo_open_file_path
+    else:
+        print(f"The file {file_path} does not exist.")
+        return
+        
+    # 使用 subprocess.run() 运行命令
+    subprocess.run(command, shell=True)
+
+def arm_breakin():
+
+    kuavo_ros_file_path = folder_path + "/arm_breakin.sh" 
+    kuavo_open_file_path = folder_path + "../../installed/share/hardware_plant/lib/ruiwo_controller/arm_breakin.sh" 
+    
+    if os.path.exists(kuavo_ros_file_path):
+        command = "bash "+ kuavo_ros_file_path
+    elif os.path.exists(kuavo_open_file_path):
+        command = "bash "+ kuavo_open_file_path
+    else:
+        print(f"The file {file_path} does not exist.")
+        return
+        
+    # 使用 subprocess.run() 运行命令
+    subprocess.run(command, shell=True)
+    
+def license_sign():
     FILE = "/home/lab/.config/lejuconfig/ec_master.key"
     # 检查文件是否存在
     if os.path.exists(FILE):
@@ -506,6 +627,7 @@ def reset_folder():
         "wifi",
         "rosbag",
         "craic_code_repo",
+        "kuavo-ros-opensource",
         "Documents",
         "Downloads",
         "xfolder"
@@ -625,28 +747,34 @@ def robot_login():
     
     # sudo systemctl start report_robot_network_info.service
 
-def get_git_info():
+def get_git_info():# 获取最新 commit 的 hash、日期和提交信息（title）
     try:
-        # 获取当前的 commit hash
-        commit_hash = subprocess.run(['git', 'rev-parse', 'HEAD'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        commit_hash = commit_hash.stdout.decode('utf-8').strip()
+        result = subprocess.run(
+            ['git', 'log', '-1', '--format=%H%n%ci%n%s'],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=5
+        )
+        output = result.stdout.decode('utf-8').strip().split('\n')
 
-        # 获取当前 commit 的提交日期
-        commit_date = subprocess.run(['git', 'show', '-s', '--format=%ci', commit_hash], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        commit_date = commit_date.stdout.decode('utf-8').strip()
-
-        # 获取当前 commit 的提交信息
-        commit_message = subprocess.run(['git', 'show', '-s', '--format=%s', commit_hash], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        commit_message = commit_message.stdout.decode('utf-8').strip()
+        if len(output) < 3:
+            raise ValueError("Unexpected git output: " + repr(output))
 
         return {
-            'commit_hash': commit_hash,
-            'commit_date': commit_date,
-            'commit_message': commit_message
+            'commit_hash': output[0],
+            'commit_date': output[1],
+            'commit_message': output[2]
         }
+
+    except subprocess.TimeoutExpired:
+        print("⚠️ Git command timed out.")
     except subprocess.CalledProcessError as e:
-        print(f"Error getting Git information: {e.stderr.decode('utf-8')}")
-        return None
+        print("❌ Git command failed:", e.stderr.decode('utf-8').strip())
+    except FileNotFoundError:
+        print("❌ Git is not installed or not in PATH.")
+    except Exception as e:
+        print("❌ Unexpected error:", str(e))
 
 def secondary_menu():
     while True:
@@ -657,17 +785,19 @@ def secondary_menu():
         print("2. 打开imu上位机软件(接屏幕)")
         print("3. 测试imu(先编译)")
         print("a. 测试二指夹爪（Ctrl + C 退出）")
-        print("b. 配置灵巧手usb")
-        print("c. 测试灵巧手")
+        print("b. 配置灵巧手（普通）usb")
+        print("c. 测试灵巧手（普通）")
         print("d. 手臂电机设置零点")
         print("e. 手臂电机辨识方向(注意电机限位不要堵转)")    
         print("f. 零点文件备份")
         print("g. 遥控器配置usb")
         print("h. 新款IMU通信板配置usb")
         print("i. 电机零点数据转换")
+        print("j. 触觉灵巧手操作")
         print("k. 更新当前目录程序(注意：会重置文件内容，建议备份文件)")
         # print("m. MAC 地址")
         print("l. license导入")
+        print("m. 执行手臂磨线")
         print("u. 配置robot上线提醒")
         print("t. 恢复出厂文件夹")
 
@@ -701,15 +831,15 @@ def secondary_menu():
             print(bcolors.HEADER + "###结束，测试夹爪###" + bcolors.ENDC)
             break
         elif option == "b":
-            print(bcolors.HEADER + "###开始，配置灵巧手usb###" + bcolors.ENDC)
+            print(bcolors.HEADER + "###开始，配置灵巧手（普通）usb###" + bcolors.ENDC)
             hand_usb()
-            print(bcolors.HEADER + "###结束，配置灵巧手usb###" + bcolors.ENDC)
+            print(bcolors.HEADER + "###结束，配置灵巧手（普通）usb###" + bcolors.ENDC)
             break
         elif option == "c":
-            print(bcolors.HEADER + "###开始，测试灵巧手###" + bcolors.ENDC)
+            print(bcolors.HEADER + "###开始，测试灵巧手（普通）###" + bcolors.ENDC)
             print(bcolors.OKCYAN + "先左右手一起握，然后依次握左手，握右手" + bcolors.ENDC)
             qiangnao_hand()
-            print(bcolors.HEADER + "###结束，测试灵巧手###" + bcolors.ENDC)  
+            print(bcolors.HEADER + "###结束，测试灵巧手（普通）###" + bcolors.ENDC)  
             break
         elif option == "d":
             print(bcolors.HEADER + "###开始，手臂电机设置零点###" + bcolors.ENDC)
@@ -746,6 +876,11 @@ def secondary_menu():
             update_kuavo()
             print(bcolors.HEADER + "###结束，更新当前目录程序###" + bcolors.ENDC)
             break
+        elif option == "j":
+            print(bcolors.HEADER + "###开始，触觉灵巧手操作###" + bcolors.ENDC)
+            touch_dexhand()
+            print(bcolors.HEADER + "###结束，触觉灵巧手操作###" + bcolors.ENDC)
+            break
         # elif option == "m":
         #     print(bcolors.HEADER + "###开始，获取 MAC 地址（等待执行完成）###" + bcolors.ENDC)
         #     MAC_get()
@@ -756,6 +891,27 @@ def secondary_menu():
             license_sign()
             print(bcolors.HEADER + "###结束，license已导入，请确认验证###" + bcolors.ENDC)   
             break  
+        elif option == "m":
+            print(bcolors.HEADER + "###在执行手臂磨线之前，请先确保完成手臂电机零点设置###" + bcolors.ENDC)
+            print("请摆正手臂，按 d 执行电机零点校准，并执行手臂磨线。")
+            print("按 q 退出程序")
+            while True:
+                option = input("请输入你的选择：")
+                if option == 'q':
+                    print("\n*-------------退出程序-------------*")
+                    exit()
+                elif option == 'd':
+                    print(bcolors.HEADER + "###开始，执行手臂零点校准###" + bcolors.ENDC)
+                    arm_setzero()
+                    ruiwo_zero()
+                    print(bcolors.HEADER + "###结束，执行手臂零点校准###" + bcolors.ENDC)
+                    print(bcolors.HEADER + "###开始，执行手臂磨线###" + bcolors.ENDC)
+                    arm_breakin()
+                    print(bcolors.HEADER + "###结束，执行手臂磨线###" + bcolors.ENDC)
+                    break
+                else:
+                    print(bcolors.FAIL + "无效的选项编号，请重新输入！\n" + bcolors.ENDC)
+            break
         elif option == "u":
             print(bcolors.HEADER + "###开始，robot上线提醒配置###" + bcolors.ENDC)
             robot_login()
@@ -814,7 +970,7 @@ if __name__ == '__main__':
         print("2. 打开imu上位机软件(接屏幕)")
         print("3. 测试imu(先编译)")
         print("a. 测试二指夹爪（Ctrl + C 退出）")
-        print("c. 测试灵巧手") 
+        print("c. 测试灵巧手（普通）") 
         print("f. 零点文件备份")
         print("k. 更新当前目录程序(注意：会重置文件内容，建议备份文件)")
         print("o. 打开开发者工具")
@@ -861,10 +1017,10 @@ if __name__ == '__main__':
             print(bcolors.HEADER + "###结束，测试夹爪###" + bcolors.ENDC)
             break
         elif option == "c":
-            print(bcolors.HEADER + "###开始，测试灵巧手###" + bcolors.ENDC)
+            print(bcolors.HEADER + "###开始，测试灵巧手（普通）###" + bcolors.ENDC)
             print(bcolors.OKCYAN + "先左右手一起握，然后依次握左手，握右手" + bcolors.ENDC)
             qiangnao_hand()
-            print(bcolors.HEADER + "###结束，测试灵巧手###" + bcolors.ENDC)  
+            print(bcolors.HEADER + "###结束，测试灵巧手（普通）###" + bcolors.ENDC)  
             break
         elif option == "f":
             print(bcolors.HEADER + "###开始，文件备份###" + bcolors.ENDC)

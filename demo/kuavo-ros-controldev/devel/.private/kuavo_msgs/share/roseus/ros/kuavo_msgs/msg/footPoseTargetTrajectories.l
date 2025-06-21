@@ -14,7 +14,7 @@
 
 (defclass kuavo_msgs::footPoseTargetTrajectories
   :super ros::object
-  :slots (_timeTrajectory _footIndexTrajectory _footPoseTrajectory ))
+  :slots (_timeTrajectory _footIndexTrajectory _footPoseTrajectory _additionalFootPoseTrajectory ))
 
 (defmethod kuavo_msgs::footPoseTargetTrajectories
   (:init
@@ -22,11 +22,13 @@
     ((:timeTrajectory __timeTrajectory) (make-array 0 :initial-element 0.0 :element-type :float))
     ((:footIndexTrajectory __footIndexTrajectory) (make-array 0 :initial-element 0 :element-type :integer))
     ((:footPoseTrajectory __footPoseTrajectory) ())
+    ((:additionalFootPoseTrajectory __additionalFootPoseTrajectory) ())
     )
    (send-super :init)
    (setq _timeTrajectory __timeTrajectory)
    (setq _footIndexTrajectory __footIndexTrajectory)
    (setq _footPoseTrajectory __footPoseTrajectory)
+   (setq _additionalFootPoseTrajectory __additionalFootPoseTrajectory)
    self)
   (:timeTrajectory
    (&optional __timeTrajectory)
@@ -41,6 +43,13 @@
      (progn
        (if __footPoseTrajectory (setq _footPoseTrajectory (car __footPoseTrajectory)))
        _footPoseTrajectory)))
+  (:additionalFootPoseTrajectory
+   (&rest __additionalFootPoseTrajectory)
+   (if (keywordp (car __additionalFootPoseTrajectory))
+       (send* _additionalFootPoseTrajectory __additionalFootPoseTrajectory)
+     (progn
+       (if __additionalFootPoseTrajectory (setq _additionalFootPoseTrajectory (car __additionalFootPoseTrajectory)))
+       _additionalFootPoseTrajectory)))
   (:serialization-length
    ()
    (+
@@ -50,6 +59,8 @@
     (* 4    (length _footIndexTrajectory)) 4
     ;; kuavo_msgs/footPose[] _footPoseTrajectory
     (apply #'+ (send-all _footPoseTrajectory :serialization-length)) 4
+    ;; kuavo_msgs/footPoses[] _additionalFootPoseTrajectory
+    (apply #'+ (send-all _additionalFootPoseTrajectory :serialization-length)) 4
     ))
   (:serialize
    (&optional strm)
@@ -68,6 +79,11 @@
      ;; kuavo_msgs/footPose[] _footPoseTrajectory
      (write-long (length _footPoseTrajectory) s)
      (dolist (elem _footPoseTrajectory)
+       (send elem :serialize s)
+       )
+     ;; kuavo_msgs/footPoses[] _additionalFootPoseTrajectory
+     (write-long (length _additionalFootPoseTrajectory) s)
+     (dolist (elem _additionalFootPoseTrajectory)
        (send elem :serialize s)
        )
      ;;
@@ -95,24 +111,38 @@
      (dolist (elem- _footPoseTrajectory)
      (send elem- :deserialize buf ptr-) (incf ptr- (send elem- :serialization-length))
      ))
+   ;; kuavo_msgs/footPoses[] _additionalFootPoseTrajectory
+   (let (n)
+     (setq n (sys::peek buf ptr- :integer)) (incf ptr- 4)
+     (setq _additionalFootPoseTrajectory (let (r) (dotimes (i n) (push (instance kuavo_msgs::footPoses :init) r)) r))
+     (dolist (elem- _additionalFootPoseTrajectory)
+     (send elem- :deserialize buf ptr-) (incf ptr- (send elem- :serialization-length))
+     ))
    ;;
    self)
   )
 
-(setf (get kuavo_msgs::footPoseTargetTrajectories :md5sum-) "6854923406c37831b40979cd2570e027")
+(setf (get kuavo_msgs::footPoseTargetTrajectories :md5sum-) "69f7e48d9a18b5c4756f9577aeefff25")
 (setf (get kuavo_msgs::footPoseTargetTrajectories :datatype-) "kuavo_msgs/footPoseTargetTrajectories")
 (setf (get kuavo_msgs::footPoseTargetTrajectories :definition-)
       "float64[]    timeTrajectory
 int32[]      footIndexTrajectory
 footPose[]   footPoseTrajectory
+footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+
 ================================================================================
 MSG: kuavo_msgs/footPose
 float64[4] footPose # x, y, z, yaw
 float64[4] torsoPose # x, y, z, yaw
+
+================================================================================
+MSG: kuavo_msgs/footPoses
+footPose[] data
+
 ")
 
 
 
-(provide :kuavo_msgs/footPoseTargetTrajectories "6854923406c37831b40979cd2570e027")
+(provide :kuavo_msgs/footPoseTargetTrajectories "69f7e48d9a18b5c4756f9577aeefff25")
 
 

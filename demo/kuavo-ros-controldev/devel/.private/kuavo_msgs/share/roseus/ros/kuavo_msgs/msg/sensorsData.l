@@ -111,7 +111,7 @@
    self)
   )
 
-(setf (get kuavo_msgs::sensorsData :md5sum-) "54439d3ac2ef33d46fd7cf6d324860c3")
+(setf (get kuavo_msgs::sensorsData :md5sum-) "35fff741b8e115992c1ac46e99c1084f")
 (setf (get kuavo_msgs::sensorsData :datatype-) "kuavo_msgs/sensorsData")
 (setf (get kuavo_msgs::sensorsData :definition-)
       "std_msgs/Header header
@@ -141,7 +141,7 @@ MSG: kuavo_msgs/jointData
 float64[] joint_q  
 float64[] joint_v  
 float64[] joint_vd    
-float64[] joint_current  
+float64[] joint_torque  
 
 ================================================================================
 MSG: kuavo_msgs/imuData
@@ -182,6 +182,6 @@ float64[] effort
 
 
 
-(provide :kuavo_msgs/sensorsData "54439d3ac2ef33d46fd7cf6d324860c3")
+(provide :kuavo_msgs/sensorsData "35fff741b8e115992c1ac46e99c1084f")
 
 

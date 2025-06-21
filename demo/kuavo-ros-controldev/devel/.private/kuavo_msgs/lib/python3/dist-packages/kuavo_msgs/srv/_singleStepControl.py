@@ -9,7 +9,7 @@ import struct
 import kuavo_msgs.msg
 
 class singleStepControlRequest(genpy.Message):
-  _md5sum = "17f130f2bf33453ad92f340f67992d0e"
+  _md5sum = "074a67ab229c3a1e68e2d35d1ecee61f"
   _type = "kuavo_msgs/singleStepControlRequest"
   _has_header = False  # flag to mark the presence of a Header object
   _full_text = """footPoseTargetTrajectories foot_pose_target_trajectories
@@ -19,10 +19,17 @@ MSG: kuavo_msgs/footPoseTargetTrajectories
 float64[]    timeTrajectory
 int32[]      footIndexTrajectory
 footPose[]   footPoseTrajectory
+footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+
 ================================================================================
 MSG: kuavo_msgs/footPose
 float64[4] footPose # x, y, z, yaw
-float64[4] torsoPose # x, y, z, yaw"""
+float64[4] torsoPose # x, y, z, yaw
+
+================================================================================
+MSG: kuavo_msgs/footPoses
+footPose[] data
+"""
   __slots__ = ['foot_pose_target_trajectories']
   _slot_types = ['kuavo_msgs/footPoseTargetTrajectories']
 
@@ -73,6 +80,14 @@ float64[4] torsoPose # x, y, z, yaw"""
       for val1 in self.foot_pose_target_trajectories.footPoseTrajectory:
         buff.write(_get_struct_4d().pack(*val1.footPose))
         buff.write(_get_struct_4d().pack(*val1.torsoPose))
+      length = len(self.foot_pose_target_trajectories.additionalFootPoseTrajectory)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.foot_pose_target_trajectories.additionalFootPoseTrajectory:
+        length = len(val1.data)
+        buff.write(_struct_I.pack(length))
+        for val2 in val1.data:
+          buff.write(_get_struct_4d().pack(*val2.footPose))
+          buff.write(_get_struct_4d().pack(*val2.torsoPose))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -116,6 +131,26 @@ float64[4] torsoPose # x, y, z, yaw"""
         end += 32
         val1.torsoPose = _get_struct_4d().unpack(str[start:end])
         self.foot_pose_target_trajectories.footPoseTrajectory.append(val1)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.foot_pose_target_trajectories.additionalFootPoseTrajectory = []
+      for i in range(0, length):
+        val1 = kuavo_msgs.msg.footPoses()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        val1.data = []
+        for i in range(0, length):
+          val2 = kuavo_msgs.msg.footPose()
+          start = end
+          end += 32
+          val2.footPose = _get_struct_4d().unpack(str[start:end])
+          start = end
+          end += 32
+          val2.torsoPose = _get_struct_4d().unpack(str[start:end])
+          val1.data.append(val2)
+        self.foot_pose_target_trajectories.additionalFootPoseTrajectory.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -141,6 +176,14 @@ float64[4] torsoPose # x, y, z, yaw"""
       for val1 in self.foot_pose_target_trajectories.footPoseTrajectory:
         buff.write(val1.footPose.tostring())
         buff.write(val1.torsoPose.tostring())
+      length = len(self.foot_pose_target_trajectories.additionalFootPoseTrajectory)
+      buff.write(_struct_I.pack(length))
+      for val1 in self.foot_pose_target_trajectories.additionalFootPoseTrajectory:
+        length = len(val1.data)
+        buff.write(_struct_I.pack(length))
+        for val2 in val1.data:
+          buff.write(val2.footPose.tostring())
+          buff.write(val2.torsoPose.tostring())
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -185,6 +228,26 @@ float64[4] torsoPose # x, y, z, yaw"""
         end += 32
         val1.torsoPose = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=4)
         self.foot_pose_target_trajectories.footPoseTrajectory.append(val1)
+      start = end
+      end += 4
+      (length,) = _struct_I.unpack(str[start:end])
+      self.foot_pose_target_trajectories.additionalFootPoseTrajectory = []
+      for i in range(0, length):
+        val1 = kuavo_msgs.msg.footPoses()
+        start = end
+        end += 4
+        (length,) = _struct_I.unpack(str[start:end])
+        val1.data = []
+        for i in range(0, length):
+          val2 = kuavo_msgs.msg.footPose()
+          start = end
+          end += 32
+          val2.footPose = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=4)
+          start = end
+          end += 32
+          val2.torsoPose = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=4)
+          val1.data.append(val2)
+        self.foot_pose_target_trajectories.additionalFootPoseTrajectory.append(val1)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -351,6 +414,6 @@ def _get_struct_B():
     return _struct_B
 class singleStepControl(object):
   _type          = 'kuavo_msgs/singleStepControl'
-  _md5sum = '9a5a8ad57a17963a16bf197fc7a66fa4'
+  _md5sum = 'a8ea61e476f706843c20c1ad025c5cdc'
   _request_class  = singleStepControlRequest
   _response_class = singleStepControlResponse

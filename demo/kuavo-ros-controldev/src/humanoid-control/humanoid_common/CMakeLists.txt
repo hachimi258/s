@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 project(humanoid_common)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 find_package(catkin REQUIRED
         COMPONENTS
         roscpp
         hardware_interface
+        kuavo_common
         )
 
 catkin_package(
@@ -15,6 +17,7 @@ catkin_package(
         LIBRARIES
         CATKIN_DEPENDS
         roscpp
+        kuavo_common
         qpoases_catkin
         ocs2_core
         ocs2_oc

@@ -2,7 +2,8 @@
 # coding: utf-8
 from typing import Tuple
 from kuavo_humanoid_sdk.interfaces.robot_info import RobotInfoBase
-from kuavo_humanoid_sdk.kuavo.core.ros.param import RosParameter, make_robot_param
+from kuavo_humanoid_sdk.kuavo.core.ros.param import RosParameter, RosParamWebsocket, make_robot_param
+from kuavo_humanoid_sdk.common.global_config import GlobalConfig
 
 class KuavoRobotInfo(RobotInfoBase):
     def __init__(self, robot_type: str = "kuavo"):
@@ -10,7 +11,11 @@ class KuavoRobotInfo(RobotInfoBase):
         
         # Load robot parameters from ROS parameter server
         kuavo_ros_param = make_robot_param()
-        self._ros_param = RosParameter()
+        if GlobalConfig.use_websocket:
+            self._ros_param = RosParamWebsocket()
+        else:
+            self._ros_param = RosParameter()
+            
         self._robot_version = kuavo_ros_param['robot_version']
         self._end_effector_type = kuavo_ros_param['end_effector_type']
         self._arm_joint_dof = kuavo_ros_param['arm_dof']
@@ -37,6 +42,7 @@ class KuavoRobotInfo(RobotInfoBase):
             str: The end effector type, where:
                 - "qiangnao" means "dexteroushand"
                 - "lejuclaw" means "lejuclaw"
+                - "qiangnao_touch" means "touchdexteroushand"
                 - ...
         """
         return self._end_effector_type

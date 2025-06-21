@@ -38,6 +38,7 @@ LAUNCH_HUMANOID_ROBOT_REAL_CMD = "roslaunch humanoid_controllers load_kuavo_real
 LAUNCH_VR_REMOTE_CONTROL_CMD = "roslaunch noitom_hi5_hand_udp_python launch_quest3_ik.launch"
 ROS_MASTER_URI = os.getenv("ROS_MASTER_URI")
 ROS_IP = os.getenv("ROS_IP")
+ROS_HOSTNAME = os.getenv("ROS_HOSTNAME")
 kuavo_ros_control_ws_path = os.getenv("KUAVO_ROS_CONTROL_WS_PATH")
 # 录制话题的格式
 record_topics_path = os.path.join(config_dir, "record_topics.json")
@@ -297,7 +298,18 @@ def launch_humanoid_robot(real_robot=True,calibrate=False):
     
     if calibrate:
         launch_cmd += " cali:=true cali_arm:=true"
-        
+    
+    # 通过读取kuavo.json文件，获取only_half_up_body参数，在launch_cmd中添加only_half_up_body:=true
+    kuavo_json = os.path.join(kuavo_ros_control_ws_path, "src", "kuavo_assets", "config", f"kuavo_v{robot_version}", "kuavo.json")
+    if not os.path.exists(kuavo_json):
+        print(f"Error: Could not find {kuavo_json}")
+        raise Exception(f"Error: Could not find {kuavo_json}")
+    with open(kuavo_json, "r") as f:    
+        kuavo_json_data = json.load(f)
+    only_half_up_body = kuavo_json_data["only_half_up_body"]
+    if only_half_up_body:
+        launch_cmd += " only_half_up_body:=true"
+
     print(f"launch_cmd: {launch_cmd}")
     print("If you want to check the session, please run 'tmux attach -t humanoid_robot'")
     tmux_cmd = [
@@ -308,6 +320,7 @@ def launch_humanoid_robot(real_robot=True,calibrate=False):
             source {kuavo_ros_control_ws_path}/devel/setup.bash && \
             export ROS_MASTER_URI={ROS_MASTER_URI} && \
             export ROS_IP={ROS_IP} && \
+            export ROS_HOSTNAME={ROS_HOSTNAME} &&\
             export ROBOT_VERSION={robot_version} && \
             {launch_cmd}; exec bash"
     ]
@@ -342,6 +355,7 @@ def start_vr_remote_control_callback(event):
           source {kuavo_ros_control_ws_path}/devel/setup.bash && \
           export ROS_MASTER_URI={ROS_MASTER_URI} && \
           export ROS_IP={ROS_IP} && \
+          export ROS_HOSTNAME={ROS_HOSTNAME} &&\
           {LAUNCH_VR_REMOTE_CONTROL_CMD}; exec bash'"
     ]
     subprocess.run(["tmux", "kill-session", "-t", VR_REMOTE_CONTROL_SESSION_NAME], 
@@ -417,6 +431,15 @@ def stop_callback(event):
     subprocess.run(["tmux", "kill-session", "-t", VR_REMOTE_CONTROL_SESSION_NAME], 
                   stderr=subprocess.DEVNULL) 
     kill_record_vr_rosbag()
+    
+    manual_h12_init_state = rospy.get_param("manual_h12_init_state", "none")
+    if "none" != manual_h12_init_state:
+        # 此if分支为命令行启动机器人: joystick_type=h12，遥控器使用和服务启动相同的逻辑。
+        # manual_h12_init_state为初始状态，其值为none表示当前是用服务启动的机器人。
+        # manual_h12_init_state不是none表示是命令行启动的机器人，此时启动机器人程序没有使用tmux，需要额外关闭
+
+        subprocess.run(["rosnode", "kill", "/nodelet_manager"], 
+                    stderr=subprocess.DEVNULL)
 
 def arm_pose_callback(event):
     source = event.kwargs.get("source")

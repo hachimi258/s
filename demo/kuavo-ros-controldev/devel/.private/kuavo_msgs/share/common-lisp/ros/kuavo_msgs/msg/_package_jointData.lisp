@@ -5,6 +5,6 @@
           JOINT_V
           JOINT_VD-VAL
           JOINT_VD
-          JOINT_CURRENT-VAL
-          JOINT_CURRENT
+          JOINT_TORQUE-VAL
+          JOINT_TORQUE
 ))

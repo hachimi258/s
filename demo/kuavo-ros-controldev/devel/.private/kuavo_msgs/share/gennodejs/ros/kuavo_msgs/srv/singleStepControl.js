@@ -63,7 +63,7 @@ class singleStepControlRequest {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '17f130f2bf33453ad92f340f67992d0e';
+    return '074a67ab229c3a1e68e2d35d1ecee61f';
   }
 
   static messageDefinition() {
@@ -76,10 +76,17 @@ class singleStepControlRequest {
     float64[]    timeTrajectory
     int32[]      footIndexTrajectory
     footPose[]   footPoseTrajectory
+    footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+    
     ================================================================================
     MSG: kuavo_msgs/footPose
     float64[4] footPose # x, y, z, yaw
     float64[4] torsoPose # x, y, z, yaw
+    
+    ================================================================================
+    MSG: kuavo_msgs/footPoses
+    footPose[] data
+    
     `;
   }
 
@@ -196,6 +203,6 @@ class singleStepControlResponse {
 module.exports = {
   Request: singleStepControlRequest,
   Response: singleStepControlResponse,
-  md5sum() { return '9a5a8ad57a17963a16bf197fc7a66fa4'; },
+  md5sum() { return 'a8ea61e476f706843c20c1ad025c5cdc'; },
   datatype() { return 'kuavo_msgs/singleStepControl'; }
 };

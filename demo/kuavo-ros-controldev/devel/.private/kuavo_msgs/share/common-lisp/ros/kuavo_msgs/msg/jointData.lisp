@@ -22,9 +22,9 @@
     :initarg :joint_vd
     :type (cl:vector cl:float)
    :initform (cl:make-array 0 :element-type 'cl:float :initial-element 0.0))
-   (joint_current
-    :reader joint_current
-    :initarg :joint_current
+   (joint_torque
+    :reader joint_torque
+    :initarg :joint_torque
     :type (cl:vector cl:float)
    :initform (cl:make-array 0 :element-type 'cl:float :initial-element 0.0)))
 )
@@ -52,10 +52,10 @@
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader kuavo_msgs-msg:joint_vd-val is deprecated.  Use kuavo_msgs-msg:joint_vd instead.")
   (joint_vd m))
 
-(cl:ensure-generic-function 'joint_current-val :lambda-list '(m))
-(cl:defmethod joint_current-val ((m <jointData>))
-  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader kuavo_msgs-msg:joint_current-val is deprecated.  Use kuavo_msgs-msg:joint_current instead.")
-  (joint_current m))
+(cl:ensure-generic-function 'joint_torque-val :lambda-list '(m))
+(cl:defmethod joint_torque-val ((m <jointData>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader kuavo_msgs-msg:joint_torque-val is deprecated.  Use kuavo_msgs-msg:joint_torque instead.")
+  (joint_torque m))
 (cl:defmethod roslisp-msg-protocol:serialize ((msg <jointData>) ostream)
   "Serializes a message object of type '<jointData>"
   (cl:let ((__ros_arr_len (cl:length (cl:slot-value msg 'joint_q))))
@@ -103,7 +103,7 @@
     (cl:write-byte (cl:ldb (cl:byte 8 48) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 56) bits) ostream)))
    (cl:slot-value msg 'joint_vd))
-  (cl:let ((__ros_arr_len (cl:length (cl:slot-value msg 'joint_current))))
+  (cl:let ((__ros_arr_len (cl:length (cl:slot-value msg 'joint_torque))))
     (cl:write-byte (cl:ldb (cl:byte 8 0) __ros_arr_len) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 8) __ros_arr_len) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 16) __ros_arr_len) ostream)
@@ -117,7 +117,7 @@
     (cl:write-byte (cl:ldb (cl:byte 8 40) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 48) bits) ostream)
     (cl:write-byte (cl:ldb (cl:byte 8 56) bits) ostream)))
-   (cl:slot-value msg 'joint_current))
+   (cl:slot-value msg 'joint_torque))
 )
 (cl:defmethod roslisp-msg-protocol:deserialize ((msg <jointData>) istream)
   "Deserializes a message object of type '<jointData>"
@@ -180,8 +180,8 @@
     (cl:setf (cl:ldb (cl:byte 8 8) __ros_arr_len) (cl:read-byte istream))
     (cl:setf (cl:ldb (cl:byte 8 16) __ros_arr_len) (cl:read-byte istream))
     (cl:setf (cl:ldb (cl:byte 8 24) __ros_arr_len) (cl:read-byte istream))
-  (cl:setf (cl:slot-value msg 'joint_current) (cl:make-array __ros_arr_len))
-  (cl:let ((vals (cl:slot-value msg 'joint_current)))
+  (cl:setf (cl:slot-value msg 'joint_torque) (cl:make-array __ros_arr_len))
+  (cl:let ((vals (cl:slot-value msg 'joint_torque)))
     (cl:dotimes (i __ros_arr_len)
     (cl:let ((bits 0))
       (cl:setf (cl:ldb (cl:byte 8 0) bits) (cl:read-byte istream))
@@ -203,22 +203,22 @@
   "kuavo_msgs/jointData")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<jointData>)))
   "Returns md5sum for a message object of type '<jointData>"
-  "ddaca6585c203ca18b9c3978db506bed")
+  "2e01436cbc40e94e8fe8f54a2c4ea282")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'jointData)))
   "Returns md5sum for a message object of type 'jointData"
-  "ddaca6585c203ca18b9c3978db506bed")
+  "2e01436cbc40e94e8fe8f54a2c4ea282")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<jointData>)))
   "Returns full string definition for message of type '<jointData>"
-  (cl:format cl:nil "float64[] joint_q  ~%float64[] joint_v  ~%float64[] joint_vd    ~%float64[] joint_current  ~%~%~%"))
+  (cl:format cl:nil "float64[] joint_q  ~%float64[] joint_v  ~%float64[] joint_vd    ~%float64[] joint_torque  ~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'jointData)))
   "Returns full string definition for message of type 'jointData"
-  (cl:format cl:nil "float64[] joint_q  ~%float64[] joint_v  ~%float64[] joint_vd    ~%float64[] joint_current  ~%~%~%"))
+  (cl:format cl:nil "float64[] joint_q  ~%float64[] joint_v  ~%float64[] joint_vd    ~%float64[] joint_torque  ~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <jointData>))
   (cl:+ 0
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'joint_q) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 8)))
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'joint_v) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 8)))
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'joint_vd) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 8)))
-     4 (cl:reduce #'cl:+ (cl:slot-value msg 'joint_current) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 8)))
+     4 (cl:reduce #'cl:+ (cl:slot-value msg 'joint_torque) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 8)))
 ))
 (cl:defmethod roslisp-msg-protocol:ros-message-to-list ((msg <jointData>))
   "Converts a ROS message object to a list"
@@ -226,5 +226,5 @@
     (cl:cons ':joint_q (joint_q msg))
     (cl:cons ':joint_v (joint_v msg))
     (cl:cons ':joint_vd (joint_vd msg))
-    (cl:cons ':joint_current (joint_current msg))
+    (cl:cons ':joint_torque (joint_torque msg))
 ))

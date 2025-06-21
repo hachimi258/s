@@ -1,1 +1,0 @@
-/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_msgs/share/common-lisp/ros/kuavo_msgs/msg/_package_tagDataArray.lisp

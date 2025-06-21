@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(motion_capture_ik)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 find_package(drake CONFIG REQUIRED)
 find_package(Eigen3 REQUIRED)
 
@@ -14,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   message_generation
   geometry_msgs
+  kuavo_msgs
 )
 find_package(BZip2 REQUIRED)
 
@@ -21,27 +23,32 @@ find_package(Boost REQUIRED COMPONENTS
   system
   filesystem
 )
-add_message_files(
-  FILES 
-  robotArmQVVD.msg
-  ikSolveError.msg
-  handPose.msg
-  armHandPose.msg
-  twoArmHandPose.msg
-  headBodyPose.msg
-  ikSolveParam.msg
-  twoArmHandPoseCmd.msg
-  robotHandPosition.msg
-  headBodyPose.msg
-)
-add_service_files(
-  DIRECTORY srv
-  FILES
-  changeArmCtrlMode.srv
-  twoArmHandPoseCmdSrv.srv
-  changeArmCtrlModeKuavo.srv
-  fkSrv.srv
-)
+
+# use kuavo_msgs instead
+
+# add_message_files(
+#   FILES
+  # robotArmQVVD.msg
+  # ikSolveError.msg
+  # handPose.msg
+  # armHandPose.msg
+  # twoArmHandPose.msg
+  # headBodyPose.msg
+  # ikSolveParam.msg
+  # twoArmHandPoseCmd.msg
+  # robotHandPosition.msg
+  # headBodyPose.msg
+#)
+# add_service_files(
+#   DIRECTORY srv
+#   FILES
+
+  # changeArmCtrlMode.srv
+  # twoArmHandPoseCmdSrv.srv
+  # changeArmCtrlModeKuavo.srv
+  # fkSrv.srv
+# )
+
 generate_messages(
   DEPENDENCIES
   std_msgs
@@ -91,6 +98,7 @@ include_directories(
 add_subdirectory(test)
 
 add_executable(arms_ik_node src/arms_ik_node.cpp)
+add_dependencies(arms_ik_node ${PROJECT_NAME}_generate_messages_cpp)
 if(EXISTS "${PLANT_IK_FILE}")
   target_link_libraries(arms_ik_node plantIK ${catkin_LIBRARIES} drake::drake)
 else()

@@ -123,12 +123,12 @@ struct MD5Sum< ::kuavo_msgs::footPoseTargetTrajectoriesSrvRequest_<ContainerAllo
 {
   static const char* value()
   {
-    return "17f130f2bf33453ad92f340f67992d0e";
+    return "074a67ab229c3a1e68e2d35d1ecee61f";
   }
 
   static const char* value(const ::kuavo_msgs::footPoseTargetTrajectoriesSrvRequest_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x17f130f2bf33453aULL;
-  static const uint64_t static_value2 = 0xd92f340f67992d0eULL;
+  static const uint64_t static_value1 = 0x074a67ab229c3a1eULL;
+  static const uint64_t static_value2 = 0x68e2d35d1ecee61fULL;
 };
 
 template<class ContainerAllocator>
@@ -154,10 +154,16 @@ struct Definition< ::kuavo_msgs::footPoseTargetTrajectoriesSrvRequest_<Container
 "float64[]    timeTrajectory\n"
 "int32[]      footIndexTrajectory\n"
 "footPose[]   footPoseTrajectory\n"
+"footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值\n"
+"\n"
 "================================================================================\n"
 "MSG: kuavo_msgs/footPose\n"
 "float64[4] footPose # x, y, z, yaw\n"
 "float64[4] torsoPose # x, y, z, yaw\n"
+"\n"
+"================================================================================\n"
+"MSG: kuavo_msgs/footPoses\n"
+"footPose[] data\n"
 ;
   }
 

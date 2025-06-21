@@ -100,7 +100,7 @@
   :super ros::object
   :slots ())
 
-(setf (get kuavo_msgs::footPoseTargetTrajectoriesSrv :md5sum-) "bc0c14793d24668f68a3b8473f6545ec")
+(setf (get kuavo_msgs::footPoseTargetTrajectoriesSrv :md5sum-) "86a3a0586a4bc1d73a3be321ecdc3a15")
 (setf (get kuavo_msgs::footPoseTargetTrajectoriesSrv :datatype-) "kuavo_msgs/footPoseTargetTrajectoriesSrv")
 (setf (get kuavo_msgs::footPoseTargetTrajectoriesSrv :request) kuavo_msgs::footPoseTargetTrajectoriesSrvRequest)
 (setf (get kuavo_msgs::footPoseTargetTrajectoriesSrv :response) kuavo_msgs::footPoseTargetTrajectoriesSrvResponse)
@@ -108,7 +108,7 @@
 (defmethod kuavo_msgs::footPoseTargetTrajectoriesSrvRequest
   (:response () (instance kuavo_msgs::footPoseTargetTrajectoriesSrvResponse :init)))
 
-(setf (get kuavo_msgs::footPoseTargetTrajectoriesSrvRequest :md5sum-) "bc0c14793d24668f68a3b8473f6545ec")
+(setf (get kuavo_msgs::footPoseTargetTrajectoriesSrvRequest :md5sum-) "86a3a0586a4bc1d73a3be321ecdc3a15")
 (setf (get kuavo_msgs::footPoseTargetTrajectoriesSrvRequest :datatype-) "kuavo_msgs/footPoseTargetTrajectoriesSrvRequest")
 (setf (get kuavo_msgs::footPoseTargetTrajectoriesSrvRequest :definition-)
       "footPoseTargetTrajectories foot_pose_target_trajectories
@@ -118,14 +118,21 @@ MSG: kuavo_msgs/footPoseTargetTrajectories
 float64[]    timeTrajectory
 int32[]      footIndexTrajectory
 footPose[]   footPoseTrajectory
+footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+
 ================================================================================
 MSG: kuavo_msgs/footPose
 float64[4] footPose # x, y, z, yaw
+float64[4] torsoPose # x, y, z, yaw
+
+================================================================================
+MSG: kuavo_msgs/footPoses
+footPose[] data
 ---
 bool success
 ")
 
-(setf (get kuavo_msgs::footPoseTargetTrajectoriesSrvResponse :md5sum-) "bc0c14793d24668f68a3b8473f6545ec")
+(setf (get kuavo_msgs::footPoseTargetTrajectoriesSrvResponse :md5sum-) "86a3a0586a4bc1d73a3be321ecdc3a15")
 (setf (get kuavo_msgs::footPoseTargetTrajectoriesSrvResponse :datatype-) "kuavo_msgs/footPoseTargetTrajectoriesSrvResponse")
 (setf (get kuavo_msgs::footPoseTargetTrajectoriesSrvResponse :definition-)
       "footPoseTargetTrajectories foot_pose_target_trajectories
@@ -135,15 +142,22 @@ MSG: kuavo_msgs/footPoseTargetTrajectories
 float64[]    timeTrajectory
 int32[]      footIndexTrajectory
 footPose[]   footPoseTrajectory
+footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值
+
 ================================================================================
 MSG: kuavo_msgs/footPose
 float64[4] footPose # x, y, z, yaw
+float64[4] torsoPose # x, y, z, yaw
+
+================================================================================
+MSG: kuavo_msgs/footPoses
+footPose[] data
 ---
 bool success
 ")
 
 
 
-(provide :kuavo_msgs/footPoseTargetTrajectoriesSrv "bc0c14793d24668f68a3b8473f6545ec")
+(provide :kuavo_msgs/footPoseTargetTrajectoriesSrv "86a3a0586a4bc1d73a3be321ecdc3a15")
 
 

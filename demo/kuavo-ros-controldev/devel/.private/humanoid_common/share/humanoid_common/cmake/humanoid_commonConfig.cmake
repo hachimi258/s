@@ -185,7 +185,7 @@ foreach(t ${humanoid_common_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "roscpp;qpoases_catkin;ocs2_core;ocs2_oc;ocs2_ddp;ocs2_mpc;ocs2_sqp;ocs2_ipm;ocs2_robotic_tools;ocs2_pinocchio_interface;ocs2_centroidal_model;ocs2_msgs;ocs2_ros_interfaces")
+set(depends "roscpp;kuavo_common;qpoases_catkin;ocs2_core;ocs2_oc;ocs2_ddp;ocs2_mpc;ocs2_sqp;ocs2_ipm;ocs2_robotic_tools;ocs2_pinocchio_interface;ocs2_centroidal_model;ocs2_msgs;ocs2_ros_interfaces")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls

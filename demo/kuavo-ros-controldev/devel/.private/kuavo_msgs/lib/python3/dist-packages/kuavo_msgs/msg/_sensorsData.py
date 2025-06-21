@@ -12,7 +12,7 @@ import kuavo_msgs.msg
 import std_msgs.msg
 
 class sensorsData(genpy.Message):
-  _md5sum = "54439d3ac2ef33d46fd7cf6d324860c3"
+  _md5sum = "35fff741b8e115992c1ac46e99c1084f"
   _type = "kuavo_msgs/sensorsData"
   _has_header = True  # flag to mark the presence of a Header object
   _full_text = """std_msgs/Header header
@@ -42,7 +42,7 @@ MSG: kuavo_msgs/jointData
 float64[] joint_q  
 float64[] joint_v  
 float64[] joint_vd    
-float64[] joint_current  
+float64[] joint_torque  
 
 ================================================================================
 MSG: kuavo_msgs/imuData
@@ -150,10 +150,10 @@ float64[] effort
       buff.write(_struct_I.pack(length))
       pattern = '<%sd'%length
       buff.write(struct.Struct(pattern).pack(*self.joint_data.joint_vd))
-      length = len(self.joint_data.joint_current)
+      length = len(self.joint_data.joint_torque)
       buff.write(_struct_I.pack(length))
       pattern = '<%sd'%length
-      buff.write(struct.Struct(pattern).pack(*self.joint_data.joint_current))
+      buff.write(struct.Struct(pattern).pack(*self.joint_data.joint_torque))
       _x = self
       buff.write(_get_struct_13d().pack(_x.imu_data.gyro.x, _x.imu_data.gyro.y, _x.imu_data.gyro.z, _x.imu_data.acc.x, _x.imu_data.acc.y, _x.imu_data.acc.z, _x.imu_data.free_acc.x, _x.imu_data.free_acc.y, _x.imu_data.free_acc.z, _x.imu_data.quat.x, _x.imu_data.quat.y, _x.imu_data.quat.z, _x.imu_data.quat.w))
       length = len(self.end_effector_data.name)
@@ -246,7 +246,7 @@ float64[] effort
       start = end
       s = struct.Struct(pattern)
       end += s.size
-      self.joint_data.joint_current = s.unpack(str[start:end])
+      self.joint_data.joint_torque = s.unpack(str[start:end])
       _x = self
       start = end
       end += 104
@@ -325,10 +325,10 @@ float64[] effort
       buff.write(_struct_I.pack(length))
       pattern = '<%sd'%length
       buff.write(self.joint_data.joint_vd.tostring())
-      length = len(self.joint_data.joint_current)
+      length = len(self.joint_data.joint_torque)
       buff.write(_struct_I.pack(length))
       pattern = '<%sd'%length
-      buff.write(self.joint_data.joint_current.tostring())
+      buff.write(self.joint_data.joint_torque.tostring())
       _x = self
       buff.write(_get_struct_13d().pack(_x.imu_data.gyro.x, _x.imu_data.gyro.y, _x.imu_data.gyro.z, _x.imu_data.acc.x, _x.imu_data.acc.y, _x.imu_data.acc.z, _x.imu_data.free_acc.x, _x.imu_data.free_acc.y, _x.imu_data.free_acc.z, _x.imu_data.quat.x, _x.imu_data.quat.y, _x.imu_data.quat.z, _x.imu_data.quat.w))
       length = len(self.end_effector_data.name)
@@ -422,7 +422,7 @@ float64[] effort
       start = end
       s = struct.Struct(pattern)
       end += s.size
-      self.joint_data.joint_current = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
+      self.joint_data.joint_torque = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
       _x = self
       start = end
       end += 104

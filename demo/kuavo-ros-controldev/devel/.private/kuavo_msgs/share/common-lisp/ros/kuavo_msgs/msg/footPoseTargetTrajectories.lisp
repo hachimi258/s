@@ -21,7 +21,12 @@
     :reader footPoseTrajectory
     :initarg :footPoseTrajectory
     :type (cl:vector kuavo_msgs-msg:footPose)
-   :initform (cl:make-array 0 :element-type 'kuavo_msgs-msg:footPose :initial-element (cl:make-instance 'kuavo_msgs-msg:footPose))))
+   :initform (cl:make-array 0 :element-type 'kuavo_msgs-msg:footPose :initial-element (cl:make-instance 'kuavo_msgs-msg:footPose)))
+   (additionalFootPoseTrajectory
+    :reader additionalFootPoseTrajectory
+    :initarg :additionalFootPoseTrajectory
+    :type (cl:vector kuavo_msgs-msg:footPoses)
+   :initform (cl:make-array 0 :element-type 'kuavo_msgs-msg:footPoses :initial-element (cl:make-instance 'kuavo_msgs-msg:footPoses))))
 )
 
 (cl:defclass footPoseTargetTrajectories (<footPoseTargetTrajectories>)
@@ -46,6 +51,11 @@
 (cl:defmethod footPoseTrajectory-val ((m <footPoseTargetTrajectories>))
   (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader kuavo_msgs-msg:footPoseTrajectory-val is deprecated.  Use kuavo_msgs-msg:footPoseTrajectory instead.")
   (footPoseTrajectory m))
+
+(cl:ensure-generic-function 'additionalFootPoseTrajectory-val :lambda-list '(m))
+(cl:defmethod additionalFootPoseTrajectory-val ((m <footPoseTargetTrajectories>))
+  (roslisp-msg-protocol:msg-deprecation-warning "Using old-style slot reader kuavo_msgs-msg:additionalFootPoseTrajectory-val is deprecated.  Use kuavo_msgs-msg:additionalFootPoseTrajectory instead.")
+  (additionalFootPoseTrajectory m))
 (cl:defmethod roslisp-msg-protocol:serialize ((msg <footPoseTargetTrajectories>) ostream)
   "Serializes a message object of type '<footPoseTargetTrajectories>"
   (cl:let ((__ros_arr_len (cl:length (cl:slot-value msg 'timeTrajectory))))
@@ -82,6 +92,13 @@
     (cl:write-byte (cl:ldb (cl:byte 8 24) __ros_arr_len) ostream))
   (cl:map cl:nil #'(cl:lambda (ele) (roslisp-msg-protocol:serialize ele ostream))
    (cl:slot-value msg 'footPoseTrajectory))
+  (cl:let ((__ros_arr_len (cl:length (cl:slot-value msg 'additionalFootPoseTrajectory))))
+    (cl:write-byte (cl:ldb (cl:byte 8 0) __ros_arr_len) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 8) __ros_arr_len) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 16) __ros_arr_len) ostream)
+    (cl:write-byte (cl:ldb (cl:byte 8 24) __ros_arr_len) ostream))
+  (cl:map cl:nil #'(cl:lambda (ele) (roslisp-msg-protocol:serialize ele ostream))
+   (cl:slot-value msg 'additionalFootPoseTrajectory))
 )
 (cl:defmethod roslisp-msg-protocol:deserialize ((msg <footPoseTargetTrajectories>) istream)
   "Deserializes a message object of type '<footPoseTargetTrajectories>"
@@ -127,6 +144,16 @@
     (cl:dotimes (i __ros_arr_len)
     (cl:setf (cl:aref vals i) (cl:make-instance 'kuavo_msgs-msg:footPose))
   (roslisp-msg-protocol:deserialize (cl:aref vals i) istream))))
+  (cl:let ((__ros_arr_len 0))
+    (cl:setf (cl:ldb (cl:byte 8 0) __ros_arr_len) (cl:read-byte istream))
+    (cl:setf (cl:ldb (cl:byte 8 8) __ros_arr_len) (cl:read-byte istream))
+    (cl:setf (cl:ldb (cl:byte 8 16) __ros_arr_len) (cl:read-byte istream))
+    (cl:setf (cl:ldb (cl:byte 8 24) __ros_arr_len) (cl:read-byte istream))
+  (cl:setf (cl:slot-value msg 'additionalFootPoseTrajectory) (cl:make-array __ros_arr_len))
+  (cl:let ((vals (cl:slot-value msg 'additionalFootPoseTrajectory)))
+    (cl:dotimes (i __ros_arr_len)
+    (cl:setf (cl:aref vals i) (cl:make-instance 'kuavo_msgs-msg:footPoses))
+  (roslisp-msg-protocol:deserialize (cl:aref vals i) istream))))
   msg
 )
 (cl:defmethod roslisp-msg-protocol:ros-datatype ((msg (cl:eql '<footPoseTargetTrajectories>)))
@@ -137,21 +164,22 @@
   "kuavo_msgs/footPoseTargetTrajectories")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<footPoseTargetTrajectories>)))
   "Returns md5sum for a message object of type '<footPoseTargetTrajectories>"
-  "6854923406c37831b40979cd2570e027")
+  "69f7e48d9a18b5c4756f9577aeefff25")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'footPoseTargetTrajectories)))
   "Returns md5sum for a message object of type 'footPoseTargetTrajectories"
-  "6854923406c37831b40979cd2570e027")
+  "69f7e48d9a18b5c4756f9577aeefff25")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<footPoseTargetTrajectories>)))
   "Returns full string definition for message of type '<footPoseTargetTrajectories>"
-  (cl:format cl:nil "float64[]    timeTrajectory~%int32[]      footIndexTrajectory~%footPose[]   footPoseTrajectory~%================================================================================~%MSG: kuavo_msgs/footPose~%float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%"))
+  (cl:format cl:nil "float64[]    timeTrajectory~%int32[]      footIndexTrajectory~%footPose[]   footPoseTrajectory~%footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值~%~%================================================================================~%MSG: kuavo_msgs/footPose~%float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%================================================================================~%MSG: kuavo_msgs/footPoses~%footPose[] data~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'footPoseTargetTrajectories)))
   "Returns full string definition for message of type 'footPoseTargetTrajectories"
-  (cl:format cl:nil "float64[]    timeTrajectory~%int32[]      footIndexTrajectory~%footPose[]   footPoseTrajectory~%================================================================================~%MSG: kuavo_msgs/footPose~%float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%"))
+  (cl:format cl:nil "float64[]    timeTrajectory~%int32[]      footIndexTrajectory~%footPose[]   footPoseTrajectory~%footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值~%~%================================================================================~%MSG: kuavo_msgs/footPose~%float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%================================================================================~%MSG: kuavo_msgs/footPoses~%footPose[] data~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <footPoseTargetTrajectories>))
   (cl:+ 0
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'timeTrajectory) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 8)))
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'footIndexTrajectory) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 4)))
      4 (cl:reduce #'cl:+ (cl:slot-value msg 'footPoseTrajectory) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ (roslisp-msg-protocol:serialization-length ele))))
+     4 (cl:reduce #'cl:+ (cl:slot-value msg 'additionalFootPoseTrajectory) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ (roslisp-msg-protocol:serialization-length ele))))
 ))
 (cl:defmethod roslisp-msg-protocol:ros-message-to-list ((msg <footPoseTargetTrajectories>))
   "Converts a ROS message object to a list"
@@ -159,4 +187,5 @@
     (cl:cons ':timeTrajectory (timeTrajectory msg))
     (cl:cons ':footIndexTrajectory (footIndexTrajectory msg))
     (cl:cons ':footPoseTrajectory (footPoseTrajectory msg))
+    (cl:cons ':additionalFootPoseTrajectory (additionalFootPoseTrajectory msg))
 ))

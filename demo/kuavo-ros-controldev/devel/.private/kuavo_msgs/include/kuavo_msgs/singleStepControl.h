@@ -40,7 +40,7 @@ template<>
 struct MD5Sum< ::kuavo_msgs::singleStepControl > {
   static const char* value()
   {
-    return "9a5a8ad57a17963a16bf197fc7a66fa4";
+    return "a8ea61e476f706843c20c1ad025c5cdc";
   }
 
   static const char* value(const ::kuavo_msgs::singleStepControl&) { return value(); }

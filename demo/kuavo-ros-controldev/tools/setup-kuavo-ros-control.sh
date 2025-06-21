@@ -27,7 +27,12 @@ setup_pip() {
 # Clone repositories
 clone_repos() {
     print_info "克隆代码仓库..."
-    
+    # 检查是否为root用户
+    if [ "$(id -u)" -eq 0 ]; then
+        print_error "请不要以root用户运行此脚本！"
+        print_error "请使用普通用户权限运行，需要时脚本会通过sudo请求权限。"
+        exit 1
+    fi
     cd ~
     print_info "请输入分支名称（直接回车则使用默认 master 分支)"
     read -r branch
@@ -36,6 +41,14 @@ clone_repos() {
 
     print_info "请输入仓库commit(直接回车则使用最新 commit)"
     read -r commit
+    # 清理 /root 下的 kuavo-ros-opensource 文件夹
+    if [ -d "/root/kuavo-ros-opensource" ]; then
+        print_info "清理 /root 下的 kuavo-ros-opensource 文件夹..."
+        sudo rm -rf /root/kuavo-ros-opensource
+        print_success "/root/kuavo-ros-opensource 清理完成"
+    else
+        print_info "/root 下不存在 kuavo-ros-opensource 文件夹，无需清理"
+    fi
 
     # 检查 kuavo-ros-opensource 目录和远程仓库
     if [ -d "kuavo-ros-opensource" ] && [ -d "kuavo-ros-opensource/.git" ]; then
@@ -67,27 +80,7 @@ clone_repos() {
     else
         git pull
     fi
-    
-    # 检查 kuavo_opensource 目录和远程仓库
-    cd ~
-    if [ -d "kuavo_opensource" ] && [ -d "kuavo_opensource/.git" ]; then
-        cd kuavo_opensource
-        REMOTE_URL=$(git remote get-url origin 2>/dev/null)
-        if [ "$REMOTE_URL" = "https://gitee.com/leju-robot/kuavo_opensource.git" ]; then
-            print_info "kuavo_opensource 目录已存在且远程仓库正确，清理工作区..."
-            git reset --hard HEAD
-            git clean -fd
-            git pull origin master
-        else
-            print_info "kuavo_opensource 目录存在但远程仓库不匹配，重新克隆..."
-            cd ~
-            sudo rm -rf kuavo_opensource
-            git clone https://gitee.com/leju-robot/kuavo_opensource.git --branch master --depth 1
-        fi
-    else
-        git clone https://gitee.com/leju-robot/kuavo_opensource.git --branch master --depth 1
-    fi
-    
+ 
     print_success "代码仓库克隆/更新完成"
 }
 
@@ -152,7 +145,6 @@ setup_drive_board() {
 }
 
 # Configure arm motor config
-# Configure arm motor config
 setup_arm_motor() {
     print_info "配置手臂电机配置文件"
 
@@ -162,12 +154,26 @@ setup_arm_motor() {
     # Determine config file name
     if [[ "$is_long_arm" == "y" || "$is_long_arm" == "Y" ]]; then
         config_file="long_arm_config.yaml"
+
+
+        cd ~/kuavo-ros-opensource/src/demo/examples_code/hand_plan_arm_trajectory/action_files
+
+        # 检查是否有*_45.tact文件
+        tact_files_count=$(find . -name "*_45.tact" | wc -l)
+        if [ $tact_files_count -eq 0 ]; then
+            print_error "未找到长手臂动作 tact 动作文件"
+            print_info "将继续执行，但可能缺少长手臂动作文件"
+        else
+            print_info "找到 $tact_files_count 个长手臂动作 tact 动作文件"
+            mkdir -p ~/.config/lejuconfig/action_files/
+            cp -r ./*_45.tact ~/.config/lejuconfig/action_files/
+        fi
     else
         config_file="config.yaml"
     fi
 
     # Find config.yaml or long_arm_config.yaml in ruiwo_controller directory
-    src_config=$(find ~/kuavo-ros-opensource -type f -path "*/ruiwo_controller/${config_file}" 2>/dev/null)
+    src_config=$(find ~/kuavo-ros-opensource -type f -path "*/ruiwo_controller/long_arm_config.yaml" 2>/dev/null)
 
     if [ -z "$src_config" ]; then
         print_error "未找到 ruiwo_controller/${config_file} 文件"
@@ -223,7 +229,7 @@ setup_hand_usb() {
   fi
 
   if [[ ${#device_list[@]} -eq 2 ]]; then
-    folder_path="$HOME/kuavo_opensource/tools/check_tool"
+    folder_path="$HOME/kuavo-ros-opensource/tools/check_tool"
     
     # 检查脚本是否存在
     if [ ! -f "$folder_path/generate_serial.sh" ]; then
@@ -300,6 +306,32 @@ build_project() {
     print_success "项目编译完成"
 }
 
+#Check hosts ip
+check_ip(){
+    print_info "检查下位机连接ip..."
+    cd ~/kuavo-ros-opensource/docs/others/CHANGE_ROS_MASTER_URI/
+    output=$(./get_ip.sh)
+    if [[ "$output" == "192.168.26.12" || "$output" == "192.168.26.1" ]]; then
+        echo "IP 匹配成功: $output"
+    else
+        echo "IP 匹配失败！请联系技术支持检查上位机 DHCP 配置！"
+        return 1
+    fi
+}
+#Change hosts mapping
+modify_hosts_mapping(){
+    print_info "修改hosts映射关系..."
+    cd ~/kuavo-ros-opensource/docs/others/CHANGE_ROS_MASTER_URI/
+    sudo -E su -c "./add_ros_master_hosts.sh"
+}
+
+#Change ROS_MASTER_URI
+modiyf_ros_master_uri(){
+    print_info "修改 ROS_MASTER_URI 和 ROS_HOSTNAME 配置..."
+    cd ~/kuavo-ros-opensource/docs/others/CHANGE_ROS_MASTER_URI/
+    source ./add_ros_master_uri.sh body
+}
+
 
 # Setup H12PRO controller
 setup_h12pro() {
@@ -333,6 +365,19 @@ cleanup_code() {
     print_success "闭源代码清理完成"
 }
 
+
+# enable change wifi at vnc desktop
+enable_vnc_network_config() {
+
+    folder_path_="$HOME/kuavo-ros-opensource/tools"
+    # 检查脚本是否存在
+    if [ ! -f "$folder_path_/enable_vnc_network_config.sh" ]; then
+      print_error "未找到 enable_vnc_network_config.sh 文件"
+      return 1
+    fi
+    sudo -E su -c "$folder_path_/enable_vnc_network_config.sh"
+}
+
 # Main execution
 main() {
     print_info "开始KUAVO-ROS-CONTROL安装配置脚本..."
@@ -346,7 +391,11 @@ main() {
     setup_end_effector
     install_vr_deps
     build_project
+    check_ip
+    modify_hosts_mapping
+    modiyf_ros_master_uri
     setup_h12pro
+    enable_vnc_network_config
     cleanup_code
     
     print_success "KUAVO-ROS-CONTROL安装配置成功完成!"

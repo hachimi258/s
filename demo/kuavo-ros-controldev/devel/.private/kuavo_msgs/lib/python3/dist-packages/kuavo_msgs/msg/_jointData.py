@@ -8,15 +8,15 @@ import struct
 
 
 class jointData(genpy.Message):
-  _md5sum = "ddaca6585c203ca18b9c3978db506bed"
+  _md5sum = "2e01436cbc40e94e8fe8f54a2c4ea282"
   _type = "kuavo_msgs/jointData"
   _has_header = False  # flag to mark the presence of a Header object
   _full_text = """float64[] joint_q  
 float64[] joint_v  
 float64[] joint_vd    
-float64[] joint_current  
+float64[] joint_torque  
 """
-  __slots__ = ['joint_q','joint_v','joint_vd','joint_current']
+  __slots__ = ['joint_q','joint_v','joint_vd','joint_torque']
   _slot_types = ['float64[]','float64[]','float64[]','float64[]']
 
   def __init__(self, *args, **kwds):
@@ -27,7 +27,7 @@ float64[] joint_current
     changes.  You cannot mix in-order arguments and keyword arguments.
 
     The available fields are:
-       joint_q,joint_v,joint_vd,joint_current
+       joint_q,joint_v,joint_vd,joint_torque
 
     :param args: complete set of field values, in .msg order
     :param kwds: use keyword arguments corresponding to message field names
@@ -42,13 +42,13 @@ float64[] joint_current
         self.joint_v = []
       if self.joint_vd is None:
         self.joint_vd = []
-      if self.joint_current is None:
-        self.joint_current = []
+      if self.joint_torque is None:
+        self.joint_torque = []
     else:
       self.joint_q = []
       self.joint_v = []
       self.joint_vd = []
-      self.joint_current = []
+      self.joint_torque = []
 
   def _get_types(self):
     """
@@ -74,10 +74,10 @@ float64[] joint_current
       buff.write(_struct_I.pack(length))
       pattern = '<%sd'%length
       buff.write(struct.Struct(pattern).pack(*self.joint_vd))
-      length = len(self.joint_current)
+      length = len(self.joint_torque)
       buff.write(_struct_I.pack(length))
       pattern = '<%sd'%length
-      buff.write(struct.Struct(pattern).pack(*self.joint_current))
+      buff.write(struct.Struct(pattern).pack(*self.joint_torque))
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -121,7 +121,7 @@ float64[] joint_current
       start = end
       s = struct.Struct(pattern)
       end += s.size
-      self.joint_current = s.unpack(str[start:end])
+      self.joint_torque = s.unpack(str[start:end])
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill
@@ -146,10 +146,10 @@ float64[] joint_current
       buff.write(_struct_I.pack(length))
       pattern = '<%sd'%length
       buff.write(self.joint_vd.tostring())
-      length = len(self.joint_current)
+      length = len(self.joint_torque)
       buff.write(_struct_I.pack(length))
       pattern = '<%sd'%length
-      buff.write(self.joint_current.tostring())
+      buff.write(self.joint_torque.tostring())
     except struct.error as se: self._check_types(struct.error("%s: '%s' when writing '%s'" % (type(se), str(se), str(locals().get('_x', self)))))
     except TypeError as te: self._check_types(ValueError("%s: '%s' when writing '%s'" % (type(te), str(te), str(locals().get('_x', self)))))
 
@@ -194,7 +194,7 @@ float64[] joint_current
       start = end
       s = struct.Struct(pattern)
       end += s.size
-      self.joint_current = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
+      self.joint_torque = numpy.frombuffer(str[start:end], dtype=numpy.float64, count=length)
       return self
     except struct.error as e:
       raise genpy.DeserializationError(e)  # most likely buffer underfill

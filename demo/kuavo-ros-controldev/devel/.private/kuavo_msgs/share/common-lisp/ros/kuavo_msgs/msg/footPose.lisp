@@ -103,10 +103,10 @@
   "b0acb7ad1ed1ee5a0a630b91b650f49a")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<footPose>)))
   "Returns full string definition for message of type '<footPose>"
-  (cl:format cl:nil "float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%"))
+  (cl:format cl:nil "float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'footPose)))
   "Returns full string definition for message of type 'footPose"
-  (cl:format cl:nil "float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%"))
+  (cl:format cl:nil "float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <footPose>))
   (cl:+ 0
      0 (cl:reduce #'cl:+ (cl:slot-value msg 'footPose) :key #'(cl:lambda (ele) (cl:declare (cl:ignorable ele)) (cl:+ 8)))
