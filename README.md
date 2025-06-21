@@ -36,10 +36,10 @@ Ensure the following dependencies are installed before running the platform:
 Inside the Docker environment, start the demo with:
 
 ```shell
-python launch_test_1.py
+python launch_task_1.py
 ```
 
-Note: In `launch_test_1.py`, when constructing the environment:
+Note: In `launch_task_1.py`, when constructing the environment:
 ```bash
 """
 Initializes the task environment.
