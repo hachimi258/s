@@ -27,13 +27,13 @@ struct jointData_
     : joint_q()
     , joint_v()
     , joint_vd()
-    , joint_current()  {
+    , joint_torque()  {
     }
   jointData_(const ContainerAllocator& _alloc)
     : joint_q(_alloc)
     , joint_v(_alloc)
     , joint_vd(_alloc)
-    , joint_current(_alloc)  {
+    , joint_torque(_alloc)  {
   (void)_alloc;
     }
 
@@ -48,8 +48,8 @@ struct jointData_
    typedef std::vector<double, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<double>> _joint_vd_type;
   _joint_vd_type joint_vd;
 
-   typedef std::vector<double, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<double>> _joint_current_type;
-  _joint_current_type joint_current;
+   typedef std::vector<double, typename std::allocator_traits<ContainerAllocator>::template rebind_alloc<double>> _joint_torque_type;
+  _joint_torque_type joint_torque;
 
 
 
@@ -83,7 +83,7 @@ bool operator==(const ::kuavo_msgs::jointData_<ContainerAllocator1> & lhs, const
   return lhs.joint_q == rhs.joint_q &&
     lhs.joint_v == rhs.joint_v &&
     lhs.joint_vd == rhs.joint_vd &&
-    lhs.joint_current == rhs.joint_current;
+    lhs.joint_torque == rhs.joint_torque;
 }
 
 template<typename ContainerAllocator1, typename ContainerAllocator2>
@@ -140,12 +140,12 @@ struct MD5Sum< ::kuavo_msgs::jointData_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "ddaca6585c203ca18b9c3978db506bed";
+    return "2e01436cbc40e94e8fe8f54a2c4ea282";
   }
 
   static const char* value(const ::kuavo_msgs::jointData_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0xddaca6585c203ca1ULL;
-  static const uint64_t static_value2 = 0x8b9c3978db506bedULL;
+  static const uint64_t static_value1 = 0x2e01436cbc40e94eULL;
+  static const uint64_t static_value2 = 0x8fe8f54a2c4ea282ULL;
 };
 
 template<class ContainerAllocator>
@@ -167,7 +167,7 @@ struct Definition< ::kuavo_msgs::jointData_<ContainerAllocator> >
     return "float64[] joint_q  \n"
 "float64[] joint_v  \n"
 "float64[] joint_vd    \n"
-"float64[] joint_current  \n"
+"float64[] joint_torque  \n"
 ;
   }
 
@@ -189,7 +189,7 @@ namespace serialization
       stream.next(m.joint_q);
       stream.next(m.joint_v);
       stream.next(m.joint_vd);
-      stream.next(m.joint_current);
+      stream.next(m.joint_torque);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -226,11 +226,11 @@ struct Printer< ::kuavo_msgs::jointData_<ContainerAllocator> >
       s << indent << "  joint_vd[" << i << "]: ";
       Printer<double>::stream(s, indent + "  ", v.joint_vd[i]);
     }
-    s << indent << "joint_current[]" << std::endl;
-    for (size_t i = 0; i < v.joint_current.size(); ++i)
+    s << indent << "joint_torque[]" << std::endl;
+    for (size_t i = 0; i < v.joint_torque.size(); ++i)
     {
-      s << indent << "  joint_current[" << i << "]: ";
-      Printer<double>::stream(s, indent + "  ", v.joint_current[i]);
+      s << indent << "  joint_torque[" << i << "]: ";
+      Printer<double>::stream(s, indent + "  ", v.joint_torque[i]);
     }
   }
 };

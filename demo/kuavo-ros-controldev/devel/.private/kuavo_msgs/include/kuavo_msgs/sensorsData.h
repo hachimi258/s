@@ -150,12 +150,12 @@ struct MD5Sum< ::kuavo_msgs::sensorsData_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "54439d3ac2ef33d46fd7cf6d324860c3";
+    return "35fff741b8e115992c1ac46e99c1084f";
   }
 
   static const char* value(const ::kuavo_msgs::sensorsData_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x54439d3ac2ef33d4ULL;
-  static const uint64_t static_value2 = 0x6fd7cf6d324860c3ULL;
+  static const uint64_t static_value1 = 0x35fff741b8e11599ULL;
+  static const uint64_t static_value2 = 0x2c1ac46e99c1084fULL;
 };
 
 template<class ContainerAllocator>
@@ -201,7 +201,7 @@ struct Definition< ::kuavo_msgs::sensorsData_<ContainerAllocator> >
 "float64[] joint_q  \n"
 "float64[] joint_v  \n"
 "float64[] joint_vd    \n"
-"float64[] joint_current  \n"
+"float64[] joint_torque  \n"
 "\n"
 "================================================================================\n"
 "MSG: kuavo_msgs/imuData\n"

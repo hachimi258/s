@@ -88,6 +88,10 @@ namespace ocs2
       {
         stance_mode_ = stance_mode;
       }
+      void setPullUpState(bool pull_up_state)
+      {
+        pull_up_state_ = pull_up_state;
+      }
       void setArmNums(int arm_nums)
       {
         arm_nums_ = arm_nums;
@@ -117,6 +121,10 @@ namespace ocs2
         std::cout << "vd.size: " << vd.size() << std::endl;
         std::cout << "vd_mes.size: " << vd_measured_.size() << std::endl;
         std::cout << "over: " << std::endl;
+      }
+      inline void setHalfBodyMode(bool half_body_mode)
+      {
+        half_body_mode_ = half_body_mode;
       }
     protected:
       TopicLogger* topic_logger_;
@@ -209,6 +217,8 @@ namespace ocs2
 
       size_t arm_nums_{};
       matrix3_t rotationYawBaseMeasuredToWorld_;
+      bool half_body_mode_ = false;
+      bool pull_up_state_ = false;
     };
 
   } // namespace humanoid

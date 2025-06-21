@@ -12,7 +12,8 @@ class footPose(genpy.Message):
   _type = "kuavo_msgs/footPose"
   _has_header = False  # flag to mark the presence of a Header object
   _full_text = """float64[4] footPose # x, y, z, yaw
-float64[4] torsoPose # x, y, z, yaw"""
+float64[4] torsoPose # x, y, z, yaw
+"""
   __slots__ = ['footPose','torsoPose']
   _slot_types = ['float64[4]','float64[4]']
 

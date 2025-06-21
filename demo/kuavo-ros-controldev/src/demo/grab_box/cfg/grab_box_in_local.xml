@@ -14,9 +14,9 @@
 
         <Sequence>
           <Echo echo_input="grasp"/>
-          <GraspBox box_pos="0.342905,-0.0810894,0.8"
+          <GraspBox box_pos="0.342905,-0.0810894,1.0"
                     box_quat="0.0,0,0,1"
-                    box_size="0.35,0.35,0.3"
+                    box_size="0.35,0.4,0.3"
                     grasp_type="0"
                     box_offset="-0.12,0.0,0.16"/>
         </Sequence>

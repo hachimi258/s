@@ -109,7 +109,7 @@ class sensorsData {
 
   static md5sum() {
     //Returns md5sum for a message object
-    return '54439d3ac2ef33d46fd7cf6d324860c3';
+    return '35fff741b8e115992c1ac46e99c1084f';
   }
 
   static messageDefinition() {
@@ -142,7 +142,7 @@ class sensorsData {
     float64[] joint_q  
     float64[] joint_v  
     float64[] joint_vd    
-    float64[] joint_current  
+    float64[] joint_torque  
     
     ================================================================================
     MSG: kuavo_msgs/imuData

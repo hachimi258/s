@@ -1,6 +1,7 @@
 from typing import Tuple
 from enum import Enum
 from dataclasses import dataclass
+import numpy as np
 
 @dataclass
 class KuavoJointData:
@@ -59,19 +60,63 @@ class KuavoArmCtrlMode(Enum):
     AutoSwing = 1 
     ExternalControl = 2
 
+class KuavoManipulationMpcFrame(Enum):
+    """Enum class representing the manipulation mpc frame for the Kuavo robot end effector.
+
+    Attributes:
+        KeepCurrentFrame: Keep the current frame (value: 0)
+        WorldFrame: World frame (value: 1)
+        LocalFrame: Local frame (value: 2)
+        VRFrame: VR frame (value: 3)
+        ManipulationWorldFrame: Manipulation world frame (value: 4)
+    """
+    KeepCurrentFrame = 0
+    WorldFrame = 1
+    LocalFrame = 2
+    VRFrame = 3
+    ManipulationWorldFrame = 4
+    ERROR = -1
+
+class KuavoManipulationMpcCtrlMode(Enum):
+    """Enum class representing the control mode for the Kuavo robot manipulation MPC.
+
+    Attributes:
+        NoControl: No control (value: 0)
+        ArmOnly: Only control the arm (value: 1)
+        BaseOnly: Only control the base (value: 2)
+        BaseArm: Control both the base and the arm (value: 3)
+        ERROR: Error state (value: -1)
+    """
+    NoControl = 0
+    ArmOnly = 1
+    BaseOnly = 2
+    BaseArm = 3
+    ERROR = -1
+
+class KuavoManipulationMpcControlFlow(Enum):
+    """Enum class representing the control data flow for the Kuavo robot manipulation.
+
+    Attributes:
+        ThroughFullBodyMpc: Control data flows through full-body MPC before entering WBC (value: 0)
+        DirectToWbc: Control data flows directly to WBC without full-body MPC (value: 1)
+        Error: Invalid control path (value: -1)
+    """
+    ThroughFullBodyMpc = 0
+    DirectToWbc = 1
+    Error = -1
 
 @dataclass
 class EndEffectorState:
     """Data class representing the state of the end effector.
 
     Args:
-        position (float): Position of the end effector, [0, 100]
-        velocity (float): ...
-        effort (float): ...
+        position (list): float, Position of the end effector, range: [0, 100]
+        velocity (list): float, ...
+        effort (list): float, ...
     """
-    position: float
-    velocity: float
-    effort: float
+    position: list
+    velocity: list
+    effort: list
     class GraspingState(Enum):
         """Enum class representing the grasping states of the end effector.
 
@@ -120,3 +165,71 @@ class KuavoIKParams:
     oritation_constraint_tol: float = 1e-3
     pos_constraint_tol: float = 1e-3 # 0.001m, work when pos_cost_weight==0.0
     pos_cost_weight: float = 0.0 # If U need high accuracy, set this to 0.0 !!!
+
+@dataclass
+class KuavoDexHandTouchState:
+    """Data class representing the touch state of the dexterous hand."""
+    
+    @dataclass
+    class KuavoTouchState:
+        """Data class representing the touch state of the dexterous hand."""
+        normal_force1: int  # 法向力1
+        normal_force2: int  # 法向力2
+        normal_force3: int  # 法向力3
+        tangential_force1: int  # 切向力1
+        tangential_force2: int  # 切向力2
+        tangential_force3: int  # 切向力3
+        tangential_direction1: int  # 切向力方向1
+        tangential_direction2: int  # 切向力方向2
+        tangential_direction3: int  # 切向力方向3
+        self_proximity1: int  # 自电容接近传感器1
+        self_proximity2: int  # 自电容接近传感器2
+        mutual_proximity: int  # 互电容接近传感器
+        status: int  # 传感器状态
+    # 5 fingers
+    data: Tuple[KuavoTouchState, KuavoTouchState, KuavoTouchState, KuavoTouchState, KuavoTouchState]
+
+@dataclass
+class AprilTagData:
+    """Represents detected AprilTag information with pose estimation.
+    
+    Attributes:
+        id (list): List of detected AprilTag IDs (integers)
+        size (list): List of tag physical sizes in meters (floats)
+        pose (list): List of PoseQuaternion objects representing tag poses
+    """
+    id: list
+    size: list
+    pose: list
+
+@dataclass
+class HomogeneousMatrix:
+    """4x4 homogeneous transformation matrix for 3D transformations.
+    
+    Represents both rotation and translation in 3D space. Can be used for
+    coordinate frame transformations and pose composition.
+    
+    Attributes:
+        matrix (np.ndarray): 4x4 numpy array of shape (4, 4) containing::
+        
+            [[R, t],
+             [0, 1]] 
+            
+        where R is 3x3 rotation matrix and t is 3x1 translation
+    """
+    matrix: np.ndarray  # Shape (4,4) homogeneous transformation matrix
+
+@dataclass
+class PoseQuaternion:
+    """3D pose representation using position and quaternion orientation.
+    
+    Provides a singularity-free orientation representation. Commonly used
+    in robotics for smooth interpolation between orientations.
+    
+    Attributes:
+        position (Tuple[float, float, float]): XYZ coordinates in meters
+        orientation (Tuple[float, float, float, float]): Unit quaternion in
+            (x, y, z, w) format following ROS convention
+    """
+    position: Tuple[float, float, float]
+    orientation: Tuple[float, float, float, float]

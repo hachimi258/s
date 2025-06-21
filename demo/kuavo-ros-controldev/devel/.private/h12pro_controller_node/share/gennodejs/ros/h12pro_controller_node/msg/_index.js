@@ -1,20 +1,20 @@
 
 "use strict";
 
+let h12proRemoteControllerChannel = require('./h12proRemoteControllerChannel.js');
 let ECJointMotordata = require('./ECJointMotordata.js');
-let robotQVTau = require('./robotQVTau.js');
+let robotPhase = require('./robotPhase.js');
 let RobotActionState = require('./RobotActionState.js');
 let robotTorsoState = require('./robotTorsoState.js');
-let robotPhase = require('./robotPhase.js');
-let h12proRemoteControllerChannel = require('./h12proRemoteControllerChannel.js');
 let walkCommand = require('./walkCommand.js');
+let robotQVTau = require('./robotQVTau.js');
 
 module.exports = {
+  h12proRemoteControllerChannel: h12proRemoteControllerChannel,
   ECJointMotordata: ECJointMotordata,
-  robotQVTau: robotQVTau,
+  robotPhase: robotPhase,
   RobotActionState: RobotActionState,
   robotTorsoState: robotTorsoState,
-  robotPhase: robotPhase,
-  h12proRemoteControllerChannel: h12proRemoteControllerChannel,
   walkCommand: walkCommand,
+  robotQVTau: robotQVTau,
 };

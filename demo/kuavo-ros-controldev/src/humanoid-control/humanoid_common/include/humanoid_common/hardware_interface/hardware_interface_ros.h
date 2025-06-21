@@ -4,7 +4,8 @@
 #include <ros/service.h>
 #include <kuavo_msgs/jointMoveTo.h>
 #include <kuavo_msgs/setHwIntialState.h>
-#include "humanoid_interface_drake/common/sensor_data.h"
+#include "kuavo_common/common/sensor_data.h"
+#include "humanoid_interface_drake/kuavo_data_buffer.h"
 #include "kuavo_msgs/setMotorEncoderRoundService.h"
 
 namespace ocs2
@@ -61,7 +62,7 @@ namespace ocs2
         sensor_data_motor.joint_q[i] = msg->joint_data.joint_q[i];
         sensor_data_motor.joint_v[i] = msg->joint_data.joint_v[i];
         sensor_data_motor.joint_vd[i] = msg->joint_data.joint_vd[i];
-        sensor_data_motor.joint_current[i] = msg->joint_data.joint_current[i];
+        sensor_data_motor.joint_current[i] = msg->joint_data.joint_torque[i];
       }
       sensor_data_motor.quat = {msg->imu_data.quat.w, msg->imu_data.quat.x, msg->imu_data.quat.y, msg->imu_data.quat.z};
       sensor_data_motor.acc = {msg->imu_data.acc.x, msg->imu_data.acc.y, msg->imu_data.acc.z};

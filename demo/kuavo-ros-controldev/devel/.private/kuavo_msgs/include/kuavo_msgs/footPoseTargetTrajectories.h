@@ -16,6 +16,7 @@
 #include <ros/message_operations.h>
 
 #include <kuavo_msgs/footPose.h>
+#include <kuavo_msgs/footPoses.h>
 
 namespace kuavo_msgs
 {
@@ -27,12 +28,14 @@ struct footPoseTargetTrajectories_
   footPoseTargetTrajectories_()
     : timeTrajectory()
     , footIndexTrajectory()
-    , footPoseTrajectory()  {
+    , footPoseTrajectory()
+    , additionalFootPoseTrajectory()  {
     }
   footPoseTargetTrajectories_(const ContainerAllocator& _alloc)
     : timeTrajectory(_alloc)
     , footIndexTrajectory(_alloc)
-    , footPoseTrajectory(_alloc)  {
+    , footPoseTrajectory(_alloc)
+    , additionalFootPoseTrajectory(_alloc)  {
   (void)_alloc;
     }
 
@@ -46,6 +49,9 @@ struct footPoseTargetTrajectories_
 
    typedef std::vector< ::kuavo_msgs::footPose_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::kuavo_msgs::footPose_<ContainerAllocator> >> _footPoseTrajectory_type;
   _footPoseTrajectory_type footPoseTrajectory;
+
+   typedef std::vector< ::kuavo_msgs::footPoses_<ContainerAllocator> , typename std::allocator_traits<ContainerAllocator>::template rebind_alloc< ::kuavo_msgs::footPoses_<ContainerAllocator> >> _additionalFootPoseTrajectory_type;
+  _additionalFootPoseTrajectory_type additionalFootPoseTrajectory;
 
 
 
@@ -78,7 +84,8 @@ bool operator==(const ::kuavo_msgs::footPoseTargetTrajectories_<ContainerAllocat
 {
   return lhs.timeTrajectory == rhs.timeTrajectory &&
     lhs.footIndexTrajectory == rhs.footIndexTrajectory &&
-    lhs.footPoseTrajectory == rhs.footPoseTrajectory;
+    lhs.footPoseTrajectory == rhs.footPoseTrajectory &&
+    lhs.additionalFootPoseTrajectory == rhs.additionalFootPoseTrajectory;
 }
 
 template<typename ContainerAllocator1, typename ContainerAllocator2>
@@ -135,12 +142,12 @@ struct MD5Sum< ::kuavo_msgs::footPoseTargetTrajectories_<ContainerAllocator> >
 {
   static const char* value()
   {
-    return "6854923406c37831b40979cd2570e027";
+    return "69f7e48d9a18b5c4756f9577aeefff25";
   }
 
   static const char* value(const ::kuavo_msgs::footPoseTargetTrajectories_<ContainerAllocator>&) { return value(); }
-  static const uint64_t static_value1 = 0x6854923406c37831ULL;
-  static const uint64_t static_value2 = 0xb40979cd2570e027ULL;
+  static const uint64_t static_value1 = 0x69f7e48d9a18b5c4ULL;
+  static const uint64_t static_value2 = 0x756f9577aeefff25ULL;
 };
 
 template<class ContainerAllocator>
@@ -162,10 +169,16 @@ struct Definition< ::kuavo_msgs::footPoseTargetTrajectories_<ContainerAllocator>
     return "float64[]    timeTrajectory\n"
 "int32[]      footIndexTrajectory\n"
 "footPose[]   footPoseTrajectory\n"
+"footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值\n"
+"\n"
 "================================================================================\n"
 "MSG: kuavo_msgs/footPose\n"
 "float64[4] footPose # x, y, z, yaw\n"
 "float64[4] torsoPose # x, y, z, yaw\n"
+"\n"
+"================================================================================\n"
+"MSG: kuavo_msgs/footPoses\n"
+"footPose[] data\n"
 ;
   }
 
@@ -187,6 +200,7 @@ namespace serialization
       stream.next(m.timeTrajectory);
       stream.next(m.footIndexTrajectory);
       stream.next(m.footPoseTrajectory);
+      stream.next(m.additionalFootPoseTrajectory);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
@@ -224,6 +238,14 @@ struct Printer< ::kuavo_msgs::footPoseTargetTrajectories_<ContainerAllocator> >
       s << std::endl;
       s << indent;
       Printer< ::kuavo_msgs::footPose_<ContainerAllocator> >::stream(s, indent + "    ", v.footPoseTrajectory[i]);
+    }
+    s << indent << "additionalFootPoseTrajectory[]" << std::endl;
+    for (size_t i = 0; i < v.additionalFootPoseTrajectory.size(); ++i)
+    {
+      s << indent << "  additionalFootPoseTrajectory[" << i << "]: ";
+      s << std::endl;
+      s << indent;
+      Printer< ::kuavo_msgs::footPoses_<ContainerAllocator> >::stream(s, indent + "    ", v.additionalFootPoseTrajectory[i]);
     }
   }
 };

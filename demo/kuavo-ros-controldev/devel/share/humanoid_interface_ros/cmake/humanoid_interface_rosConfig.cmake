@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/humanoid_interface_ros/share/humanoid_interface_ros/cmake/humanoid_interface_rosConfig.cmake

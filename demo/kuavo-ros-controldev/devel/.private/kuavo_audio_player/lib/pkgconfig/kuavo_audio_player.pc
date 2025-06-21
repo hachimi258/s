@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_audio_player
+
+Name: kuavo_audio_player
+Description: Description of kuavo_audio_player
+Version: 0.0.0
+Cflags: -I/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_audio_player/include
+Libs: -L${prefix}/lib 
+Requires: geometry_msgs rospy std_msgs turtlesim message_runtime

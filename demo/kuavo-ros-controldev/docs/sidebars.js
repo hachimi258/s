@@ -48,6 +48,16 @@ const sidebars = {
         'basic_usage/kuavo-ros-control/docs/4开发接口/仿真环境使用',
         'basic_usage/kuavo-ros-control/docs/4开发接口/SDK介绍',
         'basic_usage/kuavo-ros-control/docs/4开发接口/接口使用文档',
+        {
+          type: 'category',
+          label: 'KUAVO Humanoid SDK接口',
+          items: [
+            'basic_usage/kuavo-ros-control/docs/4开发接口/kuavo-humanoid-sdk接口/kuavo-humanoid-sdk介绍',
+            'basic_usage/kuavo-ros-control/docs/4开发接口/kuavo-humanoid-sdk接口/头部以及手部控制接口',
+            'basic_usage/kuavo-ros-control/docs/4开发接口/kuavo-humanoid-sdk接口/机器人信息获取接口',
+            'basic_usage/kuavo-ros-control/docs/4开发接口/kuavo-humanoid-sdk接口/机器人移动以及步态接口',
+          ],
+        },
       ],
     },
     {
@@ -59,6 +69,7 @@ const sidebars = {
           label: '通用案例',
           items: [
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/H12遥控器使用开发案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/动作语音快速上手案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/VR使用开发案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/落足点规划案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/二维码检测使用案例',
@@ -71,6 +82,7 @@ const sidebars = {
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/键盘控制案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/强化学习案例',
             'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/接入deepseek大模型语音交互案例',
+            'basic_usage/kuavo-ros-control/docs/5功能案例/通用案例/二维码抓取水瓶案例',
           ],
         },
         {
@@ -113,6 +125,7 @@ const sidebars = {
       label: 'Changelog',
       items: [
         'basic_usage/kuavo-ros-control/docs/kuavo更新日志',
+        'basic_usage/kuavo-ros-control/docs/更新说明',
       ],
     },
   ],

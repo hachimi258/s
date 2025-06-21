@@ -40,7 +40,7 @@ template<>
 struct MD5Sum< ::kuavo_msgs::footPoseTargetTrajectoriesSrv > {
   static const char* value()
   {
-    return "bc0c14793d24668f68a3b8473f6545ec";
+    return "86a3a0586a4bc1d73a3be321ecdc3a15";
   }
 
   static const char* value(const ::kuavo_msgs::footPoseTargetTrajectoriesSrv&) { return value(); }

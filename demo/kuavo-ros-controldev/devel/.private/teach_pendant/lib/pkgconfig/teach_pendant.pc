@@ -1,0 +1,8 @@
+prefix=/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/teach_pendant
+
+Name: teach_pendant
+Description: Description of teach_pendant
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

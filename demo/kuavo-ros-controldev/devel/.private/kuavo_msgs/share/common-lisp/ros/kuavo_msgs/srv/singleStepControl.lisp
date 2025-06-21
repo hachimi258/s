@@ -43,16 +43,16 @@
   "kuavo_msgs/singleStepControlRequest")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<singleStepControl-request>)))
   "Returns md5sum for a message object of type '<singleStepControl-request>"
-  "9a5a8ad57a17963a16bf197fc7a66fa4")
+  "a8ea61e476f706843c20c1ad025c5cdc")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'singleStepControl-request)))
   "Returns md5sum for a message object of type 'singleStepControl-request"
-  "9a5a8ad57a17963a16bf197fc7a66fa4")
+  "a8ea61e476f706843c20c1ad025c5cdc")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<singleStepControl-request>)))
   "Returns full string definition for message of type '<singleStepControl-request>"
-  (cl:format cl:nil "footPoseTargetTrajectories foot_pose_target_trajectories~%~%================================================================================~%MSG: kuavo_msgs/footPoseTargetTrajectories~%float64[]    timeTrajectory~%int32[]      footIndexTrajectory~%footPose[]   footPoseTrajectory~%================================================================================~%MSG: kuavo_msgs/footPose~%float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%"))
+  (cl:format cl:nil "footPoseTargetTrajectories foot_pose_target_trajectories~%~%================================================================================~%MSG: kuavo_msgs/footPoseTargetTrajectories~%float64[]    timeTrajectory~%int32[]      footIndexTrajectory~%footPose[]   footPoseTrajectory~%footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值~%~%================================================================================~%MSG: kuavo_msgs/footPose~%float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%================================================================================~%MSG: kuavo_msgs/footPoses~%footPose[] data~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql 'singleStepControl-request)))
   "Returns full string definition for message of type 'singleStepControl-request"
-  (cl:format cl:nil "footPoseTargetTrajectories foot_pose_target_trajectories~%~%================================================================================~%MSG: kuavo_msgs/footPoseTargetTrajectories~%float64[]    timeTrajectory~%int32[]      footIndexTrajectory~%footPose[]   footPoseTrajectory~%================================================================================~%MSG: kuavo_msgs/footPose~%float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%"))
+  (cl:format cl:nil "footPoseTargetTrajectories foot_pose_target_trajectories~%~%================================================================================~%MSG: kuavo_msgs/footPoseTargetTrajectories~%float64[]    timeTrajectory~%int32[]      footIndexTrajectory~%footPose[]   footPoseTrajectory~%footPoses[]  additionalFootPoseTrajectory  # 可选字段，用于存储额外的轨迹点规划值~%~%================================================================================~%MSG: kuavo_msgs/footPose~%float64[4] footPose # x, y, z, yaw~%float64[4] torsoPose # x, y, z, yaw~%~%================================================================================~%MSG: kuavo_msgs/footPoses~%footPose[] data~%~%~%"))
 (cl:defmethod roslisp-msg-protocol:serialization-length ((msg <singleStepControl-request>))
   (cl:+ 0
      (roslisp-msg-protocol:serialization-length (cl:slot-value msg 'foot_pose_target_trajectories))
@@ -125,10 +125,10 @@
   "kuavo_msgs/singleStepControlResponse")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql '<singleStepControl-response>)))
   "Returns md5sum for a message object of type '<singleStepControl-response>"
-  "9a5a8ad57a17963a16bf197fc7a66fa4")
+  "a8ea61e476f706843c20c1ad025c5cdc")
 (cl:defmethod roslisp-msg-protocol:md5sum ((type (cl:eql 'singleStepControl-response)))
   "Returns md5sum for a message object of type 'singleStepControl-response"
-  "9a5a8ad57a17963a16bf197fc7a66fa4")
+  "a8ea61e476f706843c20c1ad025c5cdc")
 (cl:defmethod roslisp-msg-protocol:message-definition ((type (cl:eql '<singleStepControl-response>)))
   "Returns full string definition for message of type '<singleStepControl-response>"
   (cl:format cl:nil "bool success~%string message~%~%~%~%"))

@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(motion_capture_ik_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT "/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/motion_capture_ik/include " STREQUAL " ")
+if(NOT " " STREQUAL " ")
   set(motion_capture_ik_INCLUDE_DIRS "")
-  set(_include_dirs "/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/motion_capture_ik/include")
+  set(_include_dirs "")
   if(NOT " " STREQUAL " ")
     set(_report "Check the issue tracker '' and consider creating a ticket if the problem has not been reported yet.")
   elseif(NOT " " STREQUAL " ")

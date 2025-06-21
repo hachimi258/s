@@ -79,7 +79,7 @@ namespace GrabBox
       Eigen::Vector4d target_pose;
       target_pose << destination_pose_(0), destination_pose_(1), com_height, getYawFromQuaternion(destination_pose_.segment<4>(3)) * 180 / M_PI;
 
-      std::cout << "target_pose: " << target_pose.transpose() << std::endl;
+      std::cout << "target_pose: " << target_pose << std::endl;
 
       // 设置输出端口
       setOutput("target_pose", target_pose); 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import rospy
-from kuavo_sdk.srv import fkSrv
+from kuavo_msgs.srv import fkSrv
 
 
 # FK正解服务

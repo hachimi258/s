@@ -6,6 +6,14 @@ Leju-Tongverse Simulation Platform
 
 A "AI + Robotics" virtual training arena that provides a safe and controllable simulation environment for embodied intelligence, enabling robots to fully prepare and train before facing real-world challenges.
 
+## Configuration recommendation
+
+  - Computer: CPU: Intel i9; Memory: 32 GB RAM; GPU: GeForce GTX 3090 or higher
+
+  - Operating System: Ubuntu 20.04
+
+  - Do not use the 50 series graphics card
+
 ## Installation and Docker Build
 
 ### System Requirements
@@ -14,14 +22,14 @@ Ensure the following dependencies are installed before running the platform:
 
 - [Docker](https://docs.docker.com/engine/install/)
 - [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- [Docker Image Download](https://kuavo.lejurobot.com/docker_images/leju_kuavo_tongverse-challenge-cup-2025/kuavo_tv-docker-release-v2.tar.gz)
+- [Docker Image Download](https://kuavo.lejurobot.com/docker_images/leju_kuavo_tongverse-challenge-cup-2025/kuavo_tv-docker-release-v3.tar.gz)
 
 ### Setting Up Docker
 
 1. Load the Docker image:
 
    ```shell
-   docker load -i kuavo_tv-docker-release-v2.tar.gz
+   docker load -i kuavo_tv-docker-release-v3.tar.gz
    ```
 
 2. Launch the TongVerse-Lite environment:
@@ -36,10 +44,10 @@ Ensure the following dependencies are installed before running the platform:
 Inside the Docker environment, start the demo with:
 
 ```shell
-python launch_test_1.py
+python launch_task_1.py
 ```
 
-Note: In `launch_test_1.py`, when constructing the environment:
+Note: In `launch_task_1.py`, when constructing the environment:
 ```bash
 """
 Initializes the task environment.

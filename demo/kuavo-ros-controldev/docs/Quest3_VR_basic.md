@@ -40,6 +40,10 @@ APK 下载地址 [Quest3 APK 地址](/basic_usage/kuavo_ros1_workspace/#11-在-m
 
 参考视频：[Quest3 突破空间限制](https://www.bilibili.com/video/BV1iYzwYqEwt/?share_source=copy_web&vd_source=2d815abfceff1874dd081e6eb77cc262 "Quest3 突破空间限制")
 
+如果是 V72 之后的系统，设置界面可能有变化，可以参考
+
+参考视频：[Quest3 在 V72 以上的版本如何突破空间边界限制](https://www.bilibili.com/video/BV11KXjYtE8v/?share_source=copy_web&vd_source=2d815abfceff1874dd081e6eb77cc262 "Quest3 突破空间限制")
+
 # 如何实时查看到 Quest3 投屏的屏幕
 
 1. 先完成授权的步骤，请参考前面: <如何在 Quest3 里面授权的视频>
@@ -58,3 +62,8 @@ APK 下载地址 [Quest3 APK 地址](/basic_usage/kuavo_ros1_workspace/#11-在-m
 示例视频
 
 <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=113683724243013&bvid=BV1kAk2Y1Edm&cid=27433897643&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+
+# 如何查看 Quest3 和 Kuavo 的网络延迟
+
+<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=114380415047614&bvid=BV1wz5XzBEKf&cid=29549135877&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+

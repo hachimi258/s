@@ -4,11 +4,11 @@
 import rospy
 import numpy as np
 from apriltag_ros.msg import AprilTagDetectionArray, AprilTagDetection
-from geometry_msgs.msg import PoseWithCovarianceStamped, Pose, Point, Quaternion
+from geometry_msgs.msg import PoseWithCovarianceStamped, Pose
 from nav_msgs.msg import Odometry
 from tf.transformations import quaternion_matrix, quaternion_multiply, quaternion_inverse
 from visualization_msgs.msg import Marker
-from kuavo_msgs.srv import SetTagPose, SetTagPoseResponse  # 需要创建这个服务消息类型
+from geometry_msgs.msg import Pose, Point, Quaternion
 
 
 class AprilTagPublisher:
@@ -20,62 +20,34 @@ class AprilTagPublisher:
 
         self.robot_pose = None
         self.tag_poses_world = [
-            {   # position=Point(2.74896, 0.51245, 0.78557),
-                "id": 1, # 取
+            {
+                "id": 1,
                 "pose": Pose(
-                    position=Point(1.15, 0.00245, 0.78),
+                    position=Point(1.0, 0.0, 0.9),
                     orientation=Quaternion(0.0, -0.707, 0.0, 0.707)
                 ),
                 "size": 0.06,
             },
             {
-                "id": 2, # 放
+                "id": 2,
                 "pose": Pose(
-                    position=Point(-1.004896, 2.00245, 0.78),
-                    orientation=Quaternion(0.707, 0.0, 0.707, 0 )
+                    position=Point(0.5, 1.5, 0.9),
+                    orientation=Quaternion(0.0, -0.707, 0.707, 0)
                 ),
                 "size": 0.06,
             },
-            {
-                "id": 0, # 无作用
+                        {
+                "id": 0,
                 "pose": Pose(
-                    position=Point(0.16089, 0.00148, 1.5434),
-                    orientation=Quaternion(0.0, -0.707, 0.0, 0.707)
+                    position=Point(1.0, 0.5, 0.9),
+                    orientation=Quaternion(0,-0.707,0.707,0)
                     # w=0.5,x=−0.5,y=−0.5,z=0.5
                 ),
                 "size": 0.06,
             },
         ]
 
-        # 添加服务
-        self.set_tag_pose_srv = rospy.Service('set_tag_pose', SetTagPose, self.set_tag_pose_callback)
         self.odom_sub = rospy.Subscriber('/odom', Odometry, self.odom_callback)
-
-    def set_tag_pose_callback(self, req):
-        """处理设置tag位置的服务请求"""
-        response = SetTagPoseResponse()
-        try:
-            # 查找对应id的tag
-            for tag in self.tag_poses_world:
-                if tag["id"] == req.tag_id:
-                    # 更新位置
-                    tag["pose"].position = req.pose.position
-                    tag["pose"].orientation = req.pose.orientation
-                    response.success = True
-                    response.message = f"Successfully updated tag {req.tag_id} pose"
-                    print(f"successfully updated tag {req.tag_id} pose to {tag['pose'].position}\n{tag['pose'].orientation}")
-                    print(f"tag_poses_world: {self.tag_poses_world}")
-                    return response
-            
-            # 如果没找到对应的tag
-            response.success = False
-            response.message = f"Tag ID {req.tag_id} not found"
-            return response
-            
-        except Exception as e:
-            response.success = False
-            response.message = f"Failed to update tag pose: {str(e)}"
-            return response
 
     def odom_callback(self, msg):
         self.robot_pose = msg.pose.pose

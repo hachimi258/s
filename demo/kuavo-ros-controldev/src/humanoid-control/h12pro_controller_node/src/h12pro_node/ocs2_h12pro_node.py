@@ -5,7 +5,7 @@ import time
 import rospy
 from sensor_msgs.msg import Joy
 from h12pro_controller_node.msg import h12proRemoteControllerChannel
-from robot_state.robot_state_machine import robot_state_machine
+from robot_state.robot_state_machine import robot_state_machine, RobotStateMachine, states
 from transitions.core import MachineError
 from utils.utils import read_json_file
 import rospkg
@@ -80,13 +80,14 @@ class ButtonState(enum.Enum):
     LONG_PRESS = "LONG_PRESS"
 
 class ChannelMapping:
-    def __init__(self, channel, axis_index=None, button_index=None, is_button=False, reverse=False, trigger_value=None):
+    def __init__(self, channel, axis_index=None, button_index=None, is_button=False, reverse=False, trigger_value=None, scale=1.0):
         self.channel = channel
         self.axis_index = axis_index
         self.button_index = button_index
         self.is_button = is_button
         self.reverse = reverse
         self.trigger_value = trigger_value
+        self.scale = scale
         self.previous_value = None
 
     def update(self, channel_value):
@@ -113,6 +114,7 @@ class ChannelMapping:
         value = (channel_value - Config.H12_AXIS_MID_VALUE) / (Config.H12_AXIS_RANGE//2)
         if self.reverse:
             value = -value
+        value *= self.scale
         return value
 
     def get_current_state(self, channel_value):
@@ -134,9 +136,9 @@ class H12ToJoyControllerNode:
         """Create channel mapping configuration."""
         return {
             1: ChannelMapping(1, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_YAW'], reverse=True),
-            2: ChannelMapping(2, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_Z'], reverse=True),
+            2: ChannelMapping(2, axis_index=Config.AXIS_MAPPING['RIGHT_STICK_Z'], reverse=True, scale=0.2),  # 右摇杆上下（上站下蹲）限制，限制为满值运动时的0.2倍
             3: ChannelMapping(3, axis_index=Config.AXIS_MAPPING['LEFT_STICK_X']),
-            4: ChannelMapping(4, axis_index=Config.AXIS_MAPPING['LEFT_STICK_Y'], reverse=True),
+            4: ChannelMapping(4, axis_index=Config.AXIS_MAPPING['LEFT_STICK_Y'], reverse=True, scale=0.25),  # 左摇杆左右（左右平移）限制，限制为满值运动时的0.25倍
             6: ChannelMapping(6, button_index=Config.BUTTON_MAPPING['START'], 
                             is_button=True, trigger_value=Config.H12_AXIS_RANGE_MAX),
             7: ChannelMapping(7, button_index=Config.BUTTON_MAPPING['Y'], 
@@ -178,7 +180,29 @@ class H12PROControllerNode:
     
     def __init__(self):
         """Initialize H12PRO controller node."""
+
         self.robot_state_machine = robot_state_machine
+
+        # 此if分支为命令行启动机器人: joystick_type=h12，遥控器使用和服务启动相同的逻辑。
+        # manual_h12_init_state为初始状态，其值为none表示当前是用服务启动的机器人。
+        # manual_h12_init_state不是none表示是命令行启动的机器人，此时机器人已经启动，需要调整状态机的初始状态为manual_h12_init_state
+        self.manual_h12_init_state = rospy.get_param("manual_h12_init_state", "none")
+        if self.manual_h12_init_state == "calibrate":
+            self.robot_state_machine = RobotStateMachine(
+                    states=states,
+                    initial="calibrate",
+                    send_event=True,
+                    auto_transitions=False,
+                )
+        elif self.manual_h12_init_state == "ready_stance":
+            self.robot_state_machine = RobotStateMachine(
+                    states=states,
+                    initial="ready_stance",
+                    send_event=True,
+                    auto_transitions=False,
+                )
+            
+        print(f"[H12PROControllerNode]: robot_state_machine init state is {self.robot_state_machine.state}")
         self.h12_to_joy_node = H12ToJoyControllerNode()
         self.key_timestamp: Dict[str, float] = {}
         self._config = self._load_configuration()

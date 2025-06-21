@@ -165,7 +165,7 @@ class DemoController:
             sensor_data.joint_data.joint_q = [0.0] * 28
             sensor_data.joint_data.joint_v = [0.0] * 28
             sensor_data.joint_data.joint_vd = [0.0] * 28
-            sensor_data.joint_data.joint_current = [0.0] * 28
+            sensor_data.joint_data.joint_torque = [0.0] * 28
 
             # 处理腿部数据
             if "legs" in joint_state:
@@ -178,11 +178,11 @@ class DemoController:
                     # 左腿
                     sensor_data.joint_data.joint_q[i] = legs_pos[i*2]
                     sensor_data.joint_data.joint_v[i] = legs_vel[i*2]
-                    sensor_data.joint_data.joint_current[i] = legs_effort[i*2]
+                    sensor_data.joint_data.joint_torque[i] = legs_effort[i*2]
                     # 右腿
                     sensor_data.joint_data.joint_q[i+6] = legs_pos[i*2+1]
                     sensor_data.joint_data.joint_v[i+6] = legs_vel[i*2+1]
-                    sensor_data.joint_data.joint_current[i+6] = legs_effort[i*2+1]
+                    sensor_data.joint_data.joint_torque[i+6] = legs_effort[i*2+1]
 
             # 处理手臂数据
             if "arms" in joint_state:
@@ -195,11 +195,11 @@ class DemoController:
                     # 左臂
                     sensor_data.joint_data.joint_q[i+12] = arms_pos[i*2]
                     sensor_data.joint_data.joint_v[i+12] = arms_vel[i*2]
-                    sensor_data.joint_data.joint_current[i+12] = arms_effort[i*2]
+                    sensor_data.joint_data.joint_torque[i+12] = arms_effort[i*2]
                     # 右臂
                     sensor_data.joint_data.joint_q[i+19] = arms_pos[i*2+1]
                     sensor_data.joint_data.joint_v[i+19] = arms_vel[i*2+1]
-                    sensor_data.joint_data.joint_current[i+19] = arms_effort[i*2+1]
+                    sensor_data.joint_data.joint_torque[i+19] = arms_effort[i*2+1]
 
             # 处理头部数据
             if "head" in joint_state:
@@ -211,7 +211,7 @@ class DemoController:
                 for i in range(2):
                     sensor_data.joint_data.joint_q[26+i] = head_pos[i]
                     sensor_data.joint_data.joint_v[26+i] = head_vel[i]
-                    sensor_data.joint_data.joint_current[26+i] = head_effort[i]
+                    sensor_data.joint_data.joint_torque[26+i] = head_effort[i]
 
            
         # 发布传感器数据

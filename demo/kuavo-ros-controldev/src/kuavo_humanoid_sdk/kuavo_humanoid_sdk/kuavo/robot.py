@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 # coding: utf-8
-from kuavo_humanoid_sdk.kuavo.core.ros_env import KuavoROSEnv
-kuavo_ros_env = KuavoROSEnv()
-if not kuavo_ros_env.Init():
-    raise RuntimeError("Failed to initialize ROS environment")
-else:
-    import time
-    from typing import Tuple
-    from kuavo_humanoid_sdk.kuavo.robot_info import KuavoRobotInfo
-    from kuavo_humanoid_sdk.kuavo.robot_arm import KuavoRobotArm 
-    from kuavo_humanoid_sdk.kuavo.robot_head import KuavoRobotHead
-    from kuavo_humanoid_sdk.kuavo.core.core import KuavoRobotCore
-    from kuavo_humanoid_sdk.interfaces.robot import RobotBase
-    from kuavo_humanoid_sdk.interfaces.data_types import KuavoPose, KuavoIKParams
-    from kuavo_humanoid_sdk.common.logger import SDKLogger, disable_sdk_logging
+from kuavo_humanoid_sdk.common.global_config import GlobalConfig
+
+from kuavo_humanoid_sdk.kuavo.core.ros_env import KuavoROSEnv, KuavoROSEnvWebsocket
+from kuavo_humanoid_sdk.interfaces.robot import RobotBase
+from kuavo_humanoid_sdk.common.logger import SDKLogger, disable_sdk_logging
+from kuavo_humanoid_sdk.interfaces.data_types import KuavoPose, KuavoIKParams, KuavoManipulationMpcFrame, KuavoManipulationMpcCtrlMode, KuavoManipulationMpcControlFlow
+from kuavo_humanoid_sdk.kuavo.core.core import KuavoRobotCore
+
+from typing import Tuple
+from kuavo_humanoid_sdk.kuavo.robot_info import KuavoRobotInfo
+from kuavo_humanoid_sdk.kuavo.robot_arm import KuavoRobotArm 
+from kuavo_humanoid_sdk.kuavo.robot_head import KuavoRobotHead
+
 """
 Kuavo SDK - Python Interface for Kuavo Robot Control
 
@@ -35,31 +34,60 @@ The module requires a properly configured ROS environment to function.
 """
 __all__ = ["KuavoSDK", "KuavoRobot"]
 
+
 class KuavoSDK:
+    class Options:
+        Normal = 0x01
+        WithIK = 0x02
+
     def __init__(self):
        pass
 
     @staticmethod   
-    def Init(log_level: str = "INFO")-> bool:
+    def Init(options:int=Options.Normal, log_level: str = "INFO", 
+             websocket_mode: bool = False, websocket_host='127.0.0.1', websocket_port=9090, websocket_timeout=5)-> bool:
         """Initialize the SDK.
-        
         Args:
             log_level (str): The logging level to use. Can be "ERROR", "WARN", "INFO", "DEBUG".
                 Defaults to "INFO".
-                
+            websocket_mode (bool): Whether to use websocket mode for ROS communication. If True,
+                the SDK will connect to ROS through websocket instead of direct ROS connection.
+                Defaults to False.
+            websocket_host (str): The host address of the rosbridge websocket server when using
+                websocket mode. Defaults to "127.0.0.1".
+            websocket_port (int): The port number of the rosbridge websocket server when using
+                websocket mode. Defaults to 9090.
+            websocket_timeout (int): The timeout for the websocket connection. Defaults to 5.
         Returns:
             bool: True if initialization is successful, False otherwise.
             
         Raises:
             RuntimeError: If the initialization fails.
         """
+        GlobalConfig.use_websocket = websocket_mode
+        GlobalConfig.websocket_host = websocket_host
+        GlobalConfig.websocket_port = websocket_port
+        GlobalConfig.websocket_timeout = websocket_timeout
         SDKLogger.setLevel(log_level.upper())
         # Initialize core components, connect ROS Topics...
         kuavo_core = KuavoRobotCore()
         if log_level.upper() == 'DEBUG':
             debug = True
         else:
-            debug = False    
+            debug = False   
+        # Check if IK option is enabled
+        if GlobalConfig.use_websocket:
+            if options & KuavoSDK.Options.WithIK:
+                if not KuavoROSEnvWebsocket.check_rosnode_exists('/arms_ik_node'):
+                    print("\033[31m\nError:WithIK option is enabled but ik_node is not running, please run `roslaunch motion_capture_ik ik_node.launch`\033[0m")      
+                    exit(1)
+        else:
+            if options & KuavoSDK.Options.WithIK:
+                if not KuavoROSEnv.check_rosnode_exists('/arms_ik_node'):
+                    print("\033[31m\nError:WithIK option is enabled but ik_node is not running, please run `roslaunch motion_capture_ik ik_node.launch`\033[0m")      
+                    exit(1)
+
+
         if not kuavo_core.initialize(debug=debug):
             SDKLogger.error("[SDK] Failed to initialize core components.")
             return False
@@ -74,11 +102,16 @@ class KuavoSDK:
 class KuavoRobot(RobotBase):
     def __init__(self):
         super().__init__(robot_type="kuavo")
+        
+        if not GlobalConfig.use_websocket:
+            kuavo_ros_env = KuavoROSEnv()
+            if not kuavo_ros_env.Init():
+                raise RuntimeError("Failed to initialize ROS environment")
+
         self._robot_info = KuavoRobotInfo()
         self._robot_arm  = KuavoRobotArm()
         self._robot_head = KuavoRobotHead()
         self._kuavo_core = KuavoRobotCore()
-
     def stance(self)->bool:
         """Put the robot into 'stance' mode.
         
@@ -86,7 +119,7 @@ class KuavoRobot(RobotBase):
             bool: True if the robot is put into stance mode successfully, False otherwise.
             
         Note:
-            You can call KuavoRobotState.wait_for_stance() to wait until the robot enters stance mode.
+            You can call :meth:`KuavoRobotState.wait_for_stance` to wait until the robot enters stance mode.
         """
         return self._kuavo_core.to_stance()
         
@@ -97,7 +130,7 @@ class KuavoRobot(RobotBase):
             bool: True if the robot is put into trot mode successfully, False otherwise.
             
         Note:
-            You can call KuavoRobotState.wait_for_walk() to wait until the robot enters trot mode.
+            You can call :meth:`KuavoRobotState.wait_for_walk` to wait until the robot enters trot mode.
         """
         return self._kuavo_core.to_trot()
 
@@ -113,7 +146,7 @@ class KuavoRobot(RobotBase):
             bool: True if the motion is controlled successfully, False otherwise.
             
         Note:
-            You can call KuavoRobotState.wait_for_walk() to wait until the robot enters walk mode.
+            You can call :meth:`KuavoRobotState.wait_for_walk` to wait until the robot enters walk mode.
         """
         # Limit velocity ranges
         limited_linear_x = min(0.4, max(-0.4, linear_x))
@@ -136,24 +169,29 @@ class KuavoRobot(RobotBase):
     def squat(self, height: float, pitch: float=0.0)->bool:
         """Control the robot's squat height and pitch.
         Args:
-                height (float): The height offset from normal standing height in meters, range [-0.3, 0.0],Negative values indicate squatting down.
+                height (float): The height offset from normal standing height in meters, range [-0.35, 0.0],Negative values indicate squatting down.
                 pitch (float): The pitch angle of the robot's torso in radians, range [-0.4, 0.4].
             
         Returns:
             bool: True if the squat is controlled successfully, False otherwise.
         """
         # Limit height range
-        limited_height = min(0.0, max(-0.3, height))
+        MAX_HEIGHT = 0.0
+        MIN_HEIGHT = -0.35
+        MAX_PITCH = 0.4
+        MIN_PITCH = -0.4
+        
+        limited_height = min(MAX_HEIGHT, max(MIN_HEIGHT, height))
         
         # Check if height exceeds limits
-        if height > 0.0 or height < -0.3:
-            SDKLogger.warn(f"[Robot] height {height} exceeds limit [-0.3, 0.0], will be limited")
+        if height > MAX_HEIGHT or height < MIN_HEIGHT:
+            SDKLogger.warn(f"[Robot] height {height} exceeds limit [{MIN_HEIGHT}, {MAX_HEIGHT}], will be limited")
         # Limit pitch range
-        limited_pitch = min(0.4, max(-0.4, pitch))
+        limited_pitch = min(MAX_PITCH, max(MIN_PITCH, pitch))
         
         # Check if pitch exceeds limits
-        if abs(pitch) > 0.4:
-            SDKLogger.warn(f"[Robot] pitch {pitch} exceeds limit [-0.4, 0.4], will be limited")
+        if abs(pitch) > MAX_PITCH:
+            SDKLogger.warn(f"[Robot] pitch {pitch} exceeds limit [{MIN_PITCH}, {MAX_PITCH}], will be limited")
         
         return self._kuavo_core.squat(limited_height, limited_pitch)
      
@@ -172,11 +210,55 @@ class KuavoRobot(RobotBase):
         Raises:
             RuntimeError: If the robot is not in stance state when trying to control step motion.
             ValueError: If target_pose length is not 4.
-        """
+
+        Note:
+            You can call :meth:`KuavoRobotState.wait_for_step_control` to wait until the robot enters step-control mode.
+            You can call :meth:`KuavoRobotState.wait_for_stance` to wait the step-control finish.
+        """    
         if len(target_pose) != 4:
             raise ValueError(f"[Robot] target_pose length must be 4 (x, y, z, yaw), but got {len(target_pose)}")
 
         return self._kuavo_core.step_control(target_pose, dt, is_left_first_default, collision_check)
+
+    def control_command_pose(self, target_pose_x: float, target_pose_y: float, target_pose_z: float, target_pose_yaw: float) -> bool:
+        """Control robot pose in base_link frame.
+        
+        Args:
+            target_pose_x (float): The target x position in meters.
+            target_pose_y (float): The target y position in meters.
+            target_pose_z (float): The target z position in meters.
+            target_pose_yaw (float): The target yaw angle in radians.
+            
+        Returns:
+            bool: True if the command was sent successfully, False otherwise.
+            
+        Raises:
+            RuntimeError: If the robot is not in stance state when trying to control pose.
+            
+        Note:
+            This command changes the robot state to 'command_pose'.
+        """
+        return self._kuavo_core.control_command_pose(target_pose_x, target_pose_y, target_pose_z, target_pose_yaw)
+
+    def control_command_pose_world(self, target_pose_x: float, target_pose_y: float, target_pose_z: float, target_pose_yaw: float) -> bool:
+        """Control robot pose in odom (world) frame.
+        
+        Args:
+            target_pose_x (float): The target x position in meters.
+            target_pose_y (float): The target y position in meters.
+            target_pose_z (float): The target z position in meters.
+            target_pose_yaw (float): The target yaw angle in radians.
+            
+        Returns:
+            bool: True if the command was sent successfully, False otherwise.
+            
+        Raises:
+            RuntimeError: If the robot is not in stance state when trying to control pose.
+            
+        Note:
+            This command changes the robot state to 'command_pose_world'.
+        """
+        return self._kuavo_core.control_command_pose_world(target_pose_x, target_pose_y, target_pose_z, target_pose_yaw)
     
     def control_head(self, yaw: float, pitch: float)->bool:
         """Control the head of the robot.
@@ -190,6 +272,16 @@ class KuavoRobot(RobotBase):
         """
         return self._robot_head.control_head(yaw=yaw, pitch=pitch)
     
+    def enable_head_tracking(self, target_id: int)->bool:
+        """Enable the head tracking.
+        """
+        return self._robot_head.enable_head_tracking(target_id)
+    
+    def disable_head_tracking(self)->bool:
+        """Disable the head tracking.
+        """
+        return self._robot_head.disable_head_tracking()
+    
     """ Robot Arm Control """
     def arm_reset(self)->bool:
         """Reset the robot arm.
@@ -198,8 +290,16 @@ class KuavoRobot(RobotBase):
             bool: True if the arm is reset successfully, False otherwise.
         """
         return self._robot_arm.arm_reset()
+    
+    def manipulation_mpc_reset(self)->bool:
+        """Reset the robot arm.
         
-    def control_arm_position(self, joint_positions:list)->bool:
+        Returns:
+            bool: True if the arm is reset successfully, False otherwise.
+        """
+        return self._robot_arm.manipulation_mpc_reset()
+    
+    def control_arm_joint_positions(self, joint_positions:list)->bool:
         """Control the position of the arm.
         
         Args:
@@ -217,9 +317,9 @@ class KuavoRobot(RobotBase):
             print("The length of the position list must be equal to the number of DOFs of the arm.")
             return False
         
-        return self._robot_arm.control_arm_position(joint_positions)
+        return self._robot_arm.control_arm_joint_positions(joint_positions)
     
-    def control_arm_target_poses(self, times:list, q_frames:list)->bool:
+    def control_arm_joint_trajectory(self, times:list, q_frames:list)->bool:
         """Control the target poses of the robot arm.
         
         Args:
@@ -235,11 +335,11 @@ class KuavoRobot(RobotBase):
             ValueError: If the joint position is outside the range of [-π, π].
             RuntimeError: If the robot is not in stance state when trying to control the arm.
             
-        Note:
+        Warning:
             This is an asynchronous interface. The function returns immediately after sending the command.
             Users need to wait for the motion to complete on their own.
         """
-        return self._robot_arm.control_arm_target_poses(times, q_frames)
+        return self._robot_arm.control_arm_joint_trajectory(times, q_frames)
 
     def set_fixed_arm_mode(self) -> bool:
         """Freezes the robot arm.
@@ -264,6 +364,30 @@ class KuavoRobot(RobotBase):
             bool: True if the arm is external controlled successfully, False otherwise.
         """
         return self._robot_arm.set_external_control_arm_mode()
+    
+    def set_manipulation_mpc_mode(self, ctrl_mode: KuavoManipulationMpcCtrlMode) -> bool:
+        """
+        Set the manipulation mpc mode.
+        Returns:
+            bool: True if the manipulation mpc mode is set successfully, False otherwise.
+        """
+        return self._robot_arm.set_manipulation_mpc_mode(ctrl_mode)
+    
+    def set_manipulation_mpc_control_flow(self, control_flow: KuavoManipulationMpcControlFlow) -> bool:
+        """
+        Set the manipulation mpc control flow.
+        Returns:
+            bool: True if the manipulation mpc control flow is set successfully, False otherwise.
+        """ 
+        return self._robot_arm.set_manipulation_mpc_control_flow(control_flow)
+
+    def set_manipulation_mpc_frame(self, frame: KuavoManipulationMpcFrame) -> bool:
+        """
+        Set the manipulation mpc frame.
+        Returns:
+            bool: True if the manipulation mpc frame is set successfully, False otherwise.
+        """
+        return self._robot_arm.set_manipulation_mpc_frame(frame)
     
     """ Arm Forward kinematics && Arm Inverse kinematics """
     def arm_ik(self, 
@@ -293,6 +417,9 @@ class KuavoRobot(RobotBase):
                 
         Returns:
             list: List of joint positions in radians, or None if inverse kinematics failed.
+
+        Warning:
+            This function requires initializing the SDK with the :attr:`KuavoSDK.Options.WithIK`.
         """
         return self._robot_arm.arm_ik(left_pose, right_pose, left_elbow_pos_xyz, right_elbow_pos_xyz, arm_q0, params)
 
@@ -305,5 +432,28 @@ class KuavoRobot(RobotBase):
         Returns:
             Tuple[KuavoPose, KuavoPose]: Tuple of poses for the robot left arm and right arm,
                 or (None, None) if forward kinematics failed.
+
+        Warning:
+            This function requires initializing the SDK with the :attr:`KuavoSDK.Options.WithIK`.        
         """
         return self._robot_arm.arm_fk(q)
+
+    def control_robot_end_effector_pose(self, left_pose: KuavoPose, right_pose: KuavoPose, frame: KuavoManipulationMpcFrame)->bool:
+        """Control the end effector pose of the robot arm.
+        
+        Args:
+            left_pose (KuavoPose): Pose of the robot left arm, xyz and quat.
+            right_pose (KuavoPose): Pose of the robot right arm, xyz and quat.
+            frame (KuavoManipulationMpcFrame): Frame of the robot arm.
+            
+        Returns:
+            bool: True if the end effector pose is controlled successfully, False otherwise.
+        """
+        return self._robot_arm.control_robot_end_effector_pose(left_pose, right_pose, frame)
+
+if __name__ == "__main__":
+    robot = KuavoRobot()
+    robot.set_manipulation_mpc_mode(KuavoManipulationMpcCtrlMode.ArmOnly)
+    robot.set_manipulation_mpc_control_flow(KuavoManipulationMpcControlFlow.DirectToWbc)
+    robot.set_manipulation_mpc_frame(KuavoManipulationMpcFrame.WorldFrame)
+    robot.control_robot_end_effector_pose(KuavoPose(position=[0.3, 0.4, 0.9], orientation=[0.0, 0.0, 0.0, 1.0]), KuavoPose(position=[0.3, -0.5, 1.0], orientation=[0.0, 0.0, 0.0, 1.0]), KuavoManipulationMpcFrame.WorldFrame)

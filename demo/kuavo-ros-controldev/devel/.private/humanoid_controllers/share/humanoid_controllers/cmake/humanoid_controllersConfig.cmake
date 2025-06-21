@@ -116,7 +116,7 @@ if(NOT "/TongVerse/biped_challenge/demo/kuavo-ros-controldev/src/humanoid-contro
   endforeach()
 endif()
 
-set(libraries "humanoid_controllers")
+set(libraries "humanoid_controllers;humanoid_interface_shm")
 foreach(library ${libraries})
   # keep build configuration keywords, target names and absolute libraries as-is
   if("${library}" MATCHES "^(debug|optimized|general)$")
@@ -185,7 +185,7 @@ foreach(t ${humanoid_controllers_EXPORTED_TARGETS})
   endif()
 endforeach()
 
-set(depends "roscpp;controller_interface;humanoid_common;humanoid_interface;humanoid_interface_ros;biped_s40;biped_s42;humanoid_wbc;humanoid_estimation;kuavo_estimation;ocs2_self_collision_visualization;angles")
+set(depends "roscpp;controller_interface;humanoid_common;humanoid_interface;humanoid_interface_ros;humanoid_wbc;humanoid_estimation;kuavo_estimation;ocs2_self_collision_visualization;angles;kuavo_common")
 foreach(depend ${depends})
   string(REPLACE " " ";" depend_list ${depend})
   # the package name of the dependency must be kept in a unique variable so that it is not overwritten in recursive calls
