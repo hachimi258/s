@@ -3,7 +3,7 @@
 __pycache__/
 .catkin_tools/
 build/*
-# devel/*
+devel/*
 logs/*
 .catkin_tools/
 ./src/CMakeLists.txt
