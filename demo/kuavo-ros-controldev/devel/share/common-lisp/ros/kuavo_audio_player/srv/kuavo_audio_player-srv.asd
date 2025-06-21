@@ -1,0 +1,1 @@
+/TongVerse/biped_challenge/demo/kuavo-ros-controldev/devel/.private/kuavo_audio_player/share/common-lisp/ros/kuavo_audio_player/srv/kuavo_audio_player-srv.asd
