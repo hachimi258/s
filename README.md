@@ -44,10 +44,14 @@ Ensure the following dependencies are installed before running the platform:
 Inside the Docker environment, start the demo with:
 
 ```shell
-python launch_task_1.py
+# task one
+python example_biped_teleop.py
+
+# task two
+python example_arm_teleop.py 
 ```
 
-Note: In `launch_task_1.py`, when constructing the environment:
+Note: In `example_biped_teleop.py`, when constructing the environment:
 ```bash
 """
 Initializes the task environment.
@@ -254,4 +258,63 @@ Observations are structured as follows:
 - [Interface Documentation](https://kuavo.lejurobot.com/beta_manual/basic_usage/kuavo-ros-control/docs/4%E5%BC%80%E5%8F%91%E6%8E%A5%E5%8F%A3/%E6%8E%A5%E5%8F%A3%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3/)  
 -------
 
+ ## Submission Guidelines
  
+ ### Getting Started
+ 
+ **Implement Your TaskSolver**
+ 
+ Create your custom `TaskSolver` in `submission/task_solver`. Please note:
+ 
+    - Do not modify any code outside the `task_solver` directories.
+    - Modifications to `task_launcher.py` or other core files are strictly prohibited.
+    - You are asked to implemented a TaskSolver to solve whole task. 
+ 
+ ### Other Python Package Dependencies
+ 
+ You could append other python packages you need at the end of file [docker-pip-install.sh](docker-pip-install.sh), and run `bash docker-pip-install.sh` **every time** after launching the docker image.
+ 
+ ### Implementing Your Solver
+ 
+ In the [submission](./submission/) folder, we provide a solver template. Implement your solver within the respective `task_solver/` folder. Below is the template provided:
+ 
+ ```python
+ class TaskSolver:
+     def __init__(self) -> None:
+         super().__init__()
+         # Your TaskSolver implementation goes here
+         raise NotImplementedError("Implement your own TaskSolver here")
+ 
+     def next_action(self, obs: dict) -> dict:
+         # Determine the next action based on the current observation (`obs`)
+         # action = plan(obs)
+         # return action
+         raise NotImplementedError("Implement your own TaskSolver here")
+ ```
+ 
+ - Use the `__init__()` function to initialize your solver with any necessary modules.
+ - Implement the `next_action()` function to determine and return the robot's next action based on the current observation `obs`. The specific formats for observations and actions are detailed in the sections that follow.
+ 
+ ## Testing Your Solution
+ 
+ To test your `TaskSolver`, execute:
+ ```bash
+ python submission/task_launcher.py
+ ```
+ 
+ If your model fails Task 1, proceed to the next task using:
+ ```bash
+ python submission/task_launcher.py 2
+ ```
+ Of note, Only use this command if Task 1 has failed.
+ 
+ ## Preparing for Submission
+ 
+ 1. **Compress Your Work**
+    Compress the entire [submission](./submission/) folder.
+ 
+ 2. **Rename the File**
+    Name the compressed file as `submission_<team-id>`.
+ 
+ 3. **Submit to the Committee**
+    Send your renamed submission file to our committee group for evaluation.
