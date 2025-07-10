@@ -4,6 +4,14 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <robot name="biped_v3_arm" xmlns:drake="https://drake.mit.edu">
+  <link name="base_link"/>
+
+  <joint name="base_link_to_torso" type="fixed">
+    <parent link="base_link"/>
+    <child link="torso"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  
   <link name="torso">
     <inertial>
       <origin xyz="-0.00505 0.0014 0.18077" rpy="0 0 0" />
