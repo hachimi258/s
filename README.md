@@ -314,7 +314,7 @@ Observations are structured as follows:
     Compress the entire [submission](./submission/) folder.
  
  2. **Rename the File**
-    Name the compressed file as `submission_<team-id>`.
+    Name the compressed file as `报名单位（学校全称）-题目名称-作品名称-团队负责人姓名-团队负责人联系方式`,example `XX大学-XXX-XXX-张三-185XXXXXXXX`.
  
  3. **Submit to the Committee**
-    Send your renamed submission file to our committee group for evaluation.
+    Send your renamed submission file to our committee group for evaluation.Please send your work to the email address:`zengzebin@lejurobot.com`
