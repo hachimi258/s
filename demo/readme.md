@@ -8,7 +8,7 @@
 - 上台阶
   - 新开终端, 进入控制器的目录
     ```shell
-        cd /TongVerse/biped_challenge/kuavo-ros-controldev
+        cd /TongVerse/biped_challenge/demo/kuavo-ros-controldev
         source devel/setup.bash
         rosrun humanoid_controllers stairClimbPlanner.py
     ```
