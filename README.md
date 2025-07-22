@@ -6,6 +6,8 @@ Leju-Tongverse Simulation Platform
 
 A "AI + Robotics" virtual training arena that provides a safe and controllable simulation environment for embodied intelligence, enabling robots to fully prepare and train before facing real-world challenges.
 
+**For more information** please join QQ group:`671466827`
+
 ## Configuration recommendation
 
   - Computer: CPU: Intel i9; Memory: 32 GB RAM; GPU: GeForce GTX 3090 or higher
